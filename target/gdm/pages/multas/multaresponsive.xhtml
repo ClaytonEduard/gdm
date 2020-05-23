@@ -1,0 +1,1041 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<ui:define name="titulo">Lançamento Multas</ui:define>
+
+	<ui:define name="corpo">
+		<!-- 		<p:growl id="msgMultas" /> -->
+		<style type="text/css">
+/** Demo **/
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+}
+
+.ui-outputlabel {
+	font-weight: bold;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2 .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+		<h:form id="formListagem">
+			<p:panel header="Multas">
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					style="text-align:center" paginator="true" reflow="true"
+					value="#{multasBean.multas}" var="multa" rows="10"
+					paginatorPosition="bottom">
+
+					<f:facet name="header">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							actionListener="#{multasBean.novo()}" update=":formCadastro">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</f:facet>
+
+					<p:column headerText="Opções">
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{multasBean.excluir}"
+							update=":msg :formListagem:tabela">
+							<p:confirm header="Confirmação"
+								message="Deseja excluir a multa
+							?" icon="ui-icon-alert" />
+							<f:attribute name="multaSelecionada" value="#{multa}" />
+
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-pencil"
+							actionListener="#{multasBean.editar}"
+							update=":formCadastro:painel" oncomplete="PF('dialogo').show();">
+
+							<f:attribute name="multaSelecionada" value="#{multa}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</p:column>
+
+
+
+
+					<p:column headerText="imagem:" priority="1">
+						<p:graphicImage cache="false" height="50"
+							url="http://200.225.223.161:8081/caminhoes/#{multa.veiculo.codigo}.png" />
+					</p:column>
+
+					<p:column headerText="Auto de Infração" priority="2"
+						sortBy="#{multa.autoInfracao}" filterBy="#{multa.autoInfracao}"
+						filterMatchMode="contains">
+						<h:outputText value="#{multa.autoInfracao}" />
+					</p:column>
+
+					<p:column headerText="Dt Ocorrência:" priority="3"
+						sortBy="#{multa.dataOcorencia}" filterBy="#{multa.dataOcorencia}"
+						filterMatchMode="contains">
+						<h:outputText value="#{multa.dataOcorencia}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Placa:" sortBy="#{multa.placaCavalo}"
+						filterBy="#{multa.placaCavalo}" filterMatchMode="contains">
+						<h:outputText value="#{multa.placaCavalo}" />
+					</p:column>
+
+
+					<p:column headerText="Orgão Emissor:"
+						sortBy="#{multa.orgaoEmissor.nome}"
+						filterBy="#{multa.orgaoEmissor.nome}" filterMatchMode="contains">
+						<h:outputText value="#{multa.orgaoEmissor.nome}" />
+					</p:column>
+
+					<p:column headerText="Data Lançamento:"
+						sortBy="#{multa.dataLancamento}"
+						filterBy="#{multa.dataLancamento}" filterMatchMode="contains">
+						<h:outputText value="#{multa.dataLancamento}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+
+					<p:column headerText="Tp Documento:">
+						<h:outputText value="#{multa.tipoDocumentoFormatado}" />
+					</p:column>
+
+					<p:column headerText="Tp Lançamento:">
+						<h:outputText value="#{multa.tipoLancamentoFormatado}" />
+					</p:column>
+
+
+
+
+					<p:column headerText="Cidade:">
+						<h:outputText value="#{multa.cidade.nome}" />
+					</p:column>
+
+
+
+					<p:column headerText="Valor Com desconto:">
+						<h:outputText value="#{multa.valorComdesconto}">
+							<f:convertNumber currencySymbol="R$" type="currency" />
+						</h:outputText>
+					</p:column>
+
+
+
+					<p:column headerText="Valor Total:">
+						<h:outputText value="#{multa.valorTotal}">
+							<f:convertNumber currencySymbol="R$" type="currency" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Placa:">
+						<h:outputText value="#{multa.placaCavalo}" />
+					</p:column>
+
+					<p:column headerText="Peso Averido PBT:">
+						<h:outputText value="#{multa.pesoAferidoPbt}" />
+					</p:column>
+
+					<p:column headerText="Limite Regulamentada PBt + 5% :">
+						<h:outputText value="#{multa.limiteRegulamentarPBT}" />
+					</p:column>
+
+					<p:column headerText="Excesso PBT:">
+						<h:outputText value="#{multa.excessoPbt}" />
+					</p:column>
+
+					<p:column headerText="Mens Ex.PBT:">
+						<h:outputText value="#{multa.mensagemPBT}" />
+					</p:column>
+
+					<p:column headerText="Data da Ocorrência:">
+						<h:outputText value="#{multa.dataOcorencia}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Rodovia:">
+						<h:outputText value="#{multa.rodovia}" />
+					</p:column>
+
+
+					<p:column headerText="Km:">
+						<h:outputText value="#{multa.km}" />
+					</p:column>
+
+					<p:column headerText="Veiculo:">
+						<h:outputText value="#{multa.veiculo.apelido}" />
+					</p:column>
+
+
+					<p:column headerText="G1 Multa">
+						<h:outputText value="#{multa.g1Multa}" />
+					</p:column>
+
+					<p:column headerText="G1 - Veiculo:">
+						<h:outputText value="#{multa.g1}" />
+					</p:column>
+
+
+					<p:column headerText="G1 - Diferença:">
+						<h:outputText value="#{multa.g1Diferenca}" />
+					</p:column>
+
+					<p:column headerText="G1 - Mensagem:">
+						<h:outputText value="#{multa.mensagemG1}" />
+					</p:column>
+
+					<p:column headerText="G2 Multa">
+						<h:outputText value="#{multa.g2Multa}" />
+					</p:column>
+
+					<p:column headerText="G2 - Veiculo:">
+						<h:outputText value="#{multa.g2}" />
+					</p:column>
+
+
+					<p:column headerText="G2 - Diferença:">
+						<h:outputText value="#{multa.g2Diferenca}" />
+					</p:column>
+
+					<p:column headerText="G2 - Mensagem:">
+						<h:outputText value="#{multa.mensagemG2}" />
+					</p:column>
+
+					<p:column headerText="G3 Multa">
+						<h:outputText value="#{multa.g3Multa}" />
+					</p:column>
+
+					<p:column headerText="G3 - Veiculo:">
+						<h:outputText value="#{multa.g3}" />
+					</p:column>
+
+
+					<p:column headerText="G3 - Diferença:">
+						<h:outputText value="#{multa.g3Diferenca}" />
+					</p:column>
+
+					<p:column headerText="G3 - Mensagem:">
+						<h:outputText value="#{multa.mensagemG3}" />
+					</p:column>
+
+
+					<p:column headerText="G4 Multa">
+						<h:outputText value="#{multa.g4Multa}" />
+					</p:column>
+
+					<p:column headerText="G4 - Veiculo:">
+						<h:outputText value="#{multa.g4}" />
+					</p:column>
+
+
+					<p:column headerText="G4 - Diferença:">
+						<h:outputText value="#{multa.g4Diferenca}" />
+					</p:column>
+
+					<p:column headerText="G4 - Mensagem:">
+						<h:outputText value="#{multa.mensagemG4}" />
+					</p:column>
+
+					<p:column headerText="G5 Multa">
+						<h:outputText value="#{multa.g5Multa}" />
+					</p:column>
+
+					<p:column headerText="G5 - Veiculo:">
+						<h:outputText value="#{multa.g5}" />
+					</p:column>
+
+
+					<p:column headerText="G5 - Diferença:">
+						<h:outputText value="#{multa.g5Diferenca}" />
+					</p:column>
+
+					<p:column headerText="G5 - Mensagem:">
+						<h:outputText value="#{multa.mensagemG5}" />
+					</p:column>
+
+					<p:column headerText="G6 Multa">
+						<h:outputText value="#{multa.g6Multa}" />
+					</p:column>
+
+					<p:column headerText="G6 - Veiculo:">
+						<h:outputText value="#{multa.g6}" />
+					</p:column>
+
+
+					<p:column headerText="G6 - Diferença:">
+						<h:outputText value="#{multa.g6Diferenca}" />
+					</p:column>
+
+					<p:column headerText="G6 - Mensagem:">
+						<h:outputText value="#{multa.mensagemG6}" />
+					</p:column>
+
+					<p:column headerText="G7 Multa">
+						<h:outputText value="#{multa.g7Multa}" />
+					</p:column>
+
+					<p:column headerText="G7 - Veiculo:">
+						<h:outputText value="#{multa.g7}" />
+					</p:column>
+
+
+					<p:column headerText="G7 - Diferença:">
+						<h:outputText value="#{multa.g7Diferenca}" />
+					</p:column>
+
+					<p:column headerText="G7 - Mensagem:">
+						<h:outputText value="#{multa.mensagemG7}" />
+					</p:column>
+
+					<p:column headerText="Obs">
+						<h:outputText value="#{multa.observacao}" />
+					</p:column>
+
+				</p:dataTable>
+
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+		</h:form>
+
+		<!-- 	inicio do Dialog -->
+
+		<p:dialog header="Multa - Cadastro" widgetVar="dialogo" width="90%"
+			draggable="false" closable="true" position="center" resizable="true"
+			responsive="true" modal="true" closeOnEscape="true"
+			maximizable="true">
+
+			<h:form id="formCadastro" onkeypress="return event.keyCode != 13">
+				<p:messages id="mensagem" closable="true" />
+				<div class="ui-fluid">
+
+
+					<p:panelGrid columns="8" layout="grid" id="painel"
+						columnClasses="ui-grid-col-2,ui-grid-col-8,ui-grid-col-2,ui-grid-col-8"
+						styleClass="ui-panelgrid-blank ui-fluid">
+						<p:row>
+							<p:outputLabel for="tipodocumento" value="Tipo de Documento" />
+						</p:row>
+						<p:row>
+							<p:selectOneMenu id="tipodocumento" required="true"
+								title="Tipo de documento com informações de eixos presentes ou ausentes"
+								autoWidth="false"
+								requiredMessage="O campo Tipo de Documento é obrigatório!"
+								value="#{multasBean.multa.tipoDocumento}">
+
+								<f:selectItem itemLabel="Selecione o tipo"
+									noSelectionOption="true" />
+								<f:selectItem itemLabel="MULTA C/EIXOS" itemValue="1" />
+								<f:selectItem itemLabel="MULTA S/EIXOS" itemValue="2" />
+								<f:selectItem itemLabel="NOTIFICAÇÃO C/EIXOS" itemValue="3" />
+								<f:selectItem itemLabel="NOTIFICAÇÃO S/EIXOS" itemValue="4" />
+								<p:ajax event="change" process="@this"
+									update="mensagem gridpeso1"
+									listener="#{multasBean.layoutTipoDocumento()}" />
+								<p:ajax event="change" process="@this" update="@form"
+									listener="#{multasBean.camposObrigatorios()}" />
+							</p:selectOneMenu>
+						</p:row>
+
+						<p:row>
+							<p:outputLabel for="auto" value="Auto de Infração" />
+						</p:row>
+						<p:row>
+							<p:inputText id="auto" label="Auto de infração"
+								title="Número de controle da autuação"
+								required="#{multasBean.autodeInfr_requerido}"
+								requiredMessage="O campo Auto de Infrção é obrigatório!"
+								value="#{multasBean.multa.autoInfracao}"
+								converter="upperCaseConverter">
+								<p:ajax event="blur" update="@this" />
+								<p:ajax event="blur"
+									listener="#{multasBean.checarAutoinfracao()}" update="msg" />
+							</p:inputText>
+						</p:row>
+						<p:row>
+							<p:outputLabel for="cavalo" value="Placa Cavalo" />
+						</p:row>
+						<p:row>
+							<p:inputMask id="cavalo" value="#{multasBean.multa.placaCavalo}"
+								title="Placa do cavalo ou do caminhão"
+								required="#{multasBean.placacavalo_requerido}" size="12"
+								requiredMessage="O campo Paca do Cavalo é obrigatório!"
+								mask="aaa-9999" converter="upperCaseConverter">
+								<p:ajax event="blur"
+									update="@this placa1 placa2 placa3 test limitepbte gridpeso1"
+									listener="#{multasBean.buscarVeiculoVistoria()}" />
+							</p:inputMask>
+						</p:row>
+						<p:row>
+							<p:outputLabel for="placa1" value="Placa 1" />
+						</p:row>
+						<p:row>
+							<p:inputMask id="placa1" value="#{multasBean.multa.placa1}"
+								title="Placa do primeiro reboque" size="12" mask="aaa-9999"
+								converter="upperCaseConverter" disabled="true">
+								<p:ajax event="blur" update="@this" />
+							</p:inputMask>
+						</p:row>
+						<p:row>
+							<p:outputLabel value="Placa 2" />
+						</p:row>
+						<p:row>
+							<p:inputMask id="placa2" value="#{multasBean.multa.placa2}"
+								title="Placa do segundo reboque" mask="aaa-9999"
+								converter="upperCaseConverter" disabled="true">
+								<p:ajax event="blur" update="@this" />
+							</p:inputMask>
+						</p:row>
+						<p:row>
+							<p:outputLabel value="Placa 3" />
+						</p:row>
+						<p:row>
+							<p:inputMask id="placa3" value="#{multasBean.multa.placa3}"
+								title="Placa do terceiro reboque" mask="aaa-9999"
+								converter="upperCaseConverter" disabled="true">
+								<p:ajax event="blur" update="@this" />
+							</p:inputMask>
+						</p:row>
+						<p:row>
+							<p:outputLabel for="dataocorencia" value="Data da Ocorrência" />
+						</p:row>
+						<p:row>
+							<p:inputMask id="dataocorencia" mask="99/99/9999" size="12"
+								title="Data que a autuação foi registrada"
+								required="#{multasBean.dataOcorencia_requerido}"
+								requiredMessage="O campo Data da Ocorrência é obrigatório!"
+								value="#{multasBean.multa.dataOcorencia}">
+								<f:convertDateTime pattern="dd/MM/yyyy" timeZone="ptBR" />
+							</p:inputMask>
+						</p:row>
+
+						<p:row>
+							<p:outputLabel for="orgaoemissor" value="Orgão Emissor" />
+						</p:row>
+						<p:row>
+							<p:selectOneMenu id="orgaoemissor" filter="true"
+								title="Órgão responsável pela autuação" autoWidth="false"
+								required="#{multasBean.orgao_requerido}"
+								requiredMessage="O campo Orgão Emissor é obrigatório!"
+								value="#{multasBean.multa.orgaoEmissor}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true" itemLabel="Selecione" />
+								<f:selectItems value="#{multasBean.orgaos}" var="orgao"
+									itemValue="#{orgao}" itemLabel="#{orgao.nome}" />
+								<p:ajax event="change" process="@this"
+									update="mensagem gridpeso1"
+									listener="#{multasBean.verificaOrgao()}" />
+
+							</p:selectOneMenu>
+						</p:row>
+
+						<p:row>
+							<p:outputLabel for="tipolancamento" value="Tipo Lançamento " />
+						</p:row>
+						<p:row>
+							<p:selectOneMenu id="tipolancamento"
+								title="Tipo de equipamento utilizado para aferição"
+								value="#{multasBean.multa.tipoLancamento}">
+
+								<f:selectItem itemLabel="Por Balança" itemValue="1"
+									noSelectionOption="true" />
+								<f:selectItem itemLabel="Por Nota Fiscal" itemValue="2" />
+								<p:ajax event="change" process="@this"
+									listener="#{multasBean.limpaCamposCaminhao()}"
+									update="gridpeso1" />
+								<p:ajax event="change" update="limitepbte" />
+
+							</p:selectOneMenu>
+						</p:row>
+
+						<p:row>
+							<p:outputLabel for="cidade" value="Cidade da Multa" />
+						</p:row>
+						<p:row>
+							<p:selectOneMenu id="cidade" filter="true" autoWidth="false"
+								title="Cidade da autuação"
+								converter="omnifaces.SelectItemsConverter"
+								value="#{multasBean.multa.cidade}">
+								<f:selectItem noSelectionOption="true"
+									itemLabel="Selecione cidade" />
+								<f:selectItems value="#{multasBean.cidades}" var="cidade"
+									itemValue="#{cidade}"
+									itemLabel="#{cidade.nome} - #{cidade.estado.sigla}" />
+							</p:selectOneMenu>
+						</p:row>
+						<p:row>
+							<p:outputLabel for="rodovia" value="Rodovia:" />
+						</p:row>
+						<p:row>
+							<p:inputText id="rodovia" value="#{multasBean.multa.rodovia}"
+								title="Rodovia onde ocorreu a autuação" size="12"
+								converter="upperCaseConverter">
+								<p:ajax event="blur" update="@this" />
+							</p:inputText>
+						</p:row>
+						<p:row>
+							<p:outputLabel value="Km " />
+						</p:row>
+						<p:row>
+							<p:inputText label="Km" value="#{multasBean.multa.km}" size="12"
+								title="Km da rodovia onde o veículo foi autuado"
+								converter="upperCaseConverter">
+								<p:ajax event="blur" update="@this" />
+							</p:inputText>
+						</p:row>
+
+						<p:row>
+							<p:outputLabel for="valorTotal" value="Valor Total R$" />
+						</p:row>
+
+						<p:row>
+							<p:inputNumber id="valorTotal" label="Valor Total"
+								title="Valor total da multa ou notificação a ser pago sem desconto"
+								required="#{multasBean.valortotal_requerido}"
+								requiredMessage="O campo Valor Total é obrigatório!"
+								value="#{multasBean.multa.valorTotal}">
+
+								<p:ajax event="blur" update="@this" />
+							</p:inputNumber>
+
+						</p:row>
+						<p:row>
+							<p:outputLabel value="Valor C/ Desconto R$" />
+						</p:row>
+
+						<p:row>
+							<p:inputNumber label="Valor com desconto"
+								title="Desconto sobre o valor total da multa a ser pago antes do vencimento"
+								value="#{multasBean.multa.valorComdesconto}">
+
+								<p:ajax event="blur" update="@this" />
+							</p:inputNumber>
+						</p:row>
+
+						<p:row>
+							<p:outputLabel for="vencimentoMulta" value="Vencimento da Multa:" />
+						</p:row>
+
+						<p:row>
+							<p:inputMask id="vencimentoMulta" mask="99/99/9999" size="12"
+								title="Vencimento do boleto/multa"
+								required="#{multasBean.datavencMulta_requerido}"
+								requiredMessage="O campo Vencimento da Multa é obrigatório!"
+								value="#{multasBean.multa.dataVencimentoMulta}">
+								<f:convertDateTime pattern="dd/MM/yyyy" timeZone="ptBR" />
+							</p:inputMask>
+						</p:row>
+
+						<p:row>
+							<p:outputLabel for="statusdocumento" value="Status do Pagamento" />
+						</p:row>
+
+						<p:row>
+							<p:selectOneMenu id="statusdocumento" autoWidth="false"
+								title="Status do pagamento das multa"
+								value="#{multasBean.multa.statusMultaF}">
+								<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+								<f:selectItem itemLabel="1 - Multa Pendente" itemValue="1" />
+								<f:selectItem itemLabel="2 - Multa Paga" itemValue="2" />
+								<f:selectItem itemLabel="3 - Não aplicável" itemValue="3" />
+							</p:selectOneMenu>
+						</p:row>
+
+
+						<f:facet name="footer">
+							<p:row>
+								<p:panelGrid columns="4" cellpadding="4" cellspacing="4">
+									<p:outputLabel for="test" value="Peso Aferido PBT" />
+									<p:inputNumber id="test"
+										title="Peso bruto total aferido pelo órgão na pesagem"
+										required="#{multasBean.pesoaferidopbt_requerido}"
+										decimalPlaces="0"
+										requiredMessage="O campo Peso Aferido PBT é obrigatório!"
+										filterMatchMode="contains"
+										value="#{multasBean.multa.pesoAferidoPbt}">
+										<p:ajax event="change" process="@this"
+											update="limitepbte execPBT gridpeso1 mensagemPbt"
+											listener="#{multasBean.geraImagem()}" />
+										<p:ajax event="change" process="@this"
+											update="execPBT mensagemPbt pesosTotais"
+											listener="#{multasBean.calcular()}" />
+									</p:inputNumber>
+
+									<p:outputLabel for="limitepbte"
+										value="Veículo (Limite Regulamentado PBT)" />
+									<p:selectOneMenu id="limitepbte"
+										title="Veículo identificado através do Peso Bruto Total Regulamentado"
+										required="#{multasBean.limiteregulament_requerido}"
+										requiredMessage="O campo Limite Regulamentado PBT é obrigatório!"
+										value="#{multasBean.multa.veiculo}" filter="true"
+										filterMatchMode="contains"
+										converter="omnifaces.SelectItemsConverter">
+										<f:selectItem itemLabel="" />
+										<f:selectItems value="#{multasBean.veiculos}" var="veiculo"
+											itemLabel="#{veiculo.classe} - #{veiculo.nome} + 5% = #{veiculo.capacidadePBT}  (#{veiculo.apelido})"
+											itemValue="#{veiculo}" />
+										<p:ajax event="change" process="@this"
+											update="execPBT gridpeso1 mensagemPbt"
+											listener="#{multasBean.geraImagem()}" />
+										<p:ajax event="change" process="@this"
+											update="execPBT mensagemPbt pesosTotais"
+											listener="#{multasBean.calcular()}" />
+
+									</p:selectOneMenu>
+									<h:outputLabel for="execPBT" value="Excesso Peso Bruto Total  " />
+									<p:inputNumber id="execPBT" decimalPlaces="0"
+										title="Quantidade em quilos de excesso aferido no peso bruto total"
+										styleClass="exec" value="#{multasBean.multa.excessoPbt}"
+										disabled="true" />
+
+									<h:outputLabel for="mensagemPbt"
+										value="Mensagem Peso Bruto Total  " />
+									<p:inputText id="mensagemPbt" size="100"
+										title="Mensagem de excesso PBT"
+										style="background-color:#FFFFFF;"
+										value="#{multasBean.multa.mensagemPBT}" disabled="true" />
+								</p:panelGrid>
+							</p:row>
+						</f:facet>
+					</p:panelGrid>
+
+
+
+
+
+
+
+					<!-- 					comeca a parte das imagem e pesos -->
+
+
+					<p:panelGrid id="gridpeso1" columns="2">
+						<p:column width="600" id="coluna1" style="margin-left:10px">
+							<p:panelGrid columns="4">
+
+							</p:panelGrid>
+							<p:galleria value="#{multasBean.imagens2}" var="image"
+								title="Imagem do veículo identificado"
+								style="margin-top:5px; background:#FFFFFF; align:center;"
+								panelHeight="348" panelWidth="593" showFilmstrip="false">
+								<!-- 	possiciona a imagem dentro do campo -->
+								<p:graphicImage id="imagemPeso" cache="false"
+									title="Imagem do veículo identificado"
+									url="http://200.225.223.161:8081/caminhoes/#{image}"
+									styleClass="img"
+									style="align:center; margin-top:15px; margin-bottom:5px">
+								</p:graphicImage>
+
+							</p:galleria>
+
+							<p:separator>
+							</p:separator>
+						</p:column>
+						<p:column style="margin-left:10px">
+							<h:panelGrid id="pesosTotais" rendered="#{multasBean.exibir}"
+								styleClass="align:center">
+
+								<p:overlayPanel id="imagePanel" for="imageBtn" hideEffect="fade">
+									<p:graphicImage name="/images/CONFIGURACAO DE EIXOS.png"
+										width="430" />
+								</p:overlayPanel>
+
+
+								<h:panelGrid columns="5" id="valores" style="align-right:20px">
+
+									<f:facet name="header">
+										<p:row>
+											<p:column colspan="7">Capacidade do Veiculo</p:column>
+										</p:row>
+									</f:facet>
+
+									<p:row>
+										<p:column style="font-weight: bold;">
+											<p:column colspan="2">
+												<p:commandButton id="imageBtn" value="?" type="button"
+													update="@this" style="size:30px; possition:center" />
+											</p:column>
+										</p:column>
+
+									</p:row>
+
+									<p:row>
+										<p:column>
+											<p:column colspan="2">
+												<p:outputLabel value="Medição realizada"
+													title="Peso aferido no eixo do veículo" />
+											</p:column>
+										</p:column>
+									</p:row>
+
+
+									<p:row>
+										<p:column colspan="2">
+											<p:outputLabel value="Limite + tolerância"
+												title="Limite regulamentado do eixo + a tolerância de 10%" />
+										</p:column>
+									</p:row>
+									<p:row>
+										<p:column colspan="2">
+											<p:outputLabel value="Excesso eixo"
+												title="Diferença entre a medição realizada  e  limite regulamentado com tolerância de 10%" />
+										</p:column>
+									</p:row>
+
+									<p:row>
+										<p:column colspan="2">
+											<p:outputLabel value="Possíveis motivos de infração!"
+												title="Possível causa da autuação" />
+										</p:column>
+									</p:row>
+
+									<p:row>
+										<p:outputLabel for="g1Multa" value="G1"
+											style="text-align:center" />
+									</p:row>
+
+									<p:row>
+										<p:inputNumber id="g1Multa" size="13" decimalPlaces="0"
+											value="#{multasBean.multa.g1Multa}"
+											title="Peso aferido no eixo do veículo">
+
+											<p:ajax event="blur" update="diferencaG1 mensagemG1"
+												listener="#{multasBean.capturaPesosG1()}" />
+										</p:inputNumber>
+									</p:row>
+
+									<p:row>
+										<p:inputNumber value="#{multasBean.multa.g1}" size="13"
+											disabled="true" decimalPlaces="0"
+											title="Limite regulamentado do eixo + a tolerância de 10%" />
+
+									</p:row>
+
+									<p:row>
+										<p:inputNumber id="diferencaG1"
+											value="#{multasBean.multa.g1Diferenca}" decimalPlaces="0"
+											size="8" disabled="true" styleClass="ui-menuitem-text"
+											title="Diferença entre a medição realizada  e  limite regulamentado com tolerância de 10%" />
+									</p:row>
+
+
+									<p:row>
+										<p:inputText id="mensagemG1"
+											value="#{multasBean.multa.mensagemG1}" size="47"
+											disabled="true" title="#{multasBean.multa.mensagemG1}" />
+									</p:row>
+
+									<p:row>
+										<p:outputLabel for="g2Multa" value="G2"
+											title="Peso aferido no eixo do veículo" />
+									</p:row>
+
+
+									<p:row>
+										<p:inputNumber id="g2Multa" size="13"
+											value="#{multasBean.multa.g2Multa}" decimalPlaces="0"
+											title="Peso aferido no eixo do veículo">
+
+											<p:ajax event="blur"
+												update="diferencaG2 mensagemG2 mensagemG1"
+												listener="#{multasBean.capturaPesosG2()}" />
+										</p:inputNumber>
+									</p:row>
+
+									<p:row>
+										<p:inputNumber value="#{multasBean.multa.g2}" disabled="true"
+											size="13" decimalPlaces="0"
+											title="Limite regulamentado do eixo + a tolerância de 10%" />
+
+									</p:row>
+
+									<p:row>
+										<p:inputNumber id="diferencaG2"
+											value="#{multasBean.multa.g2Diferenca}" decimalPlaces="0"
+											size="8" disabled="true" styleClass="ui-menuitem-text"
+											title="Diferença entre a medição realizada  e  limite regulamentado com tolerância de 10%" />
+									</p:row>
+
+
+									<p:row>
+										<p:inputText id="mensagemG2"
+											value="#{multasBean.multa.mensagemG2}" size="47"
+											disabled="true" title="#{multasBean.multa.mensagemG2}" />
+									</p:row>
+
+
+									<p:row>
+										<p:outputLabel for="g3Multa" value="G3" style="font-size:13px" />
+									</p:row>
+
+
+									<p:row>
+										<p:inputNumber id="g3Multa" size="13" decimalPlaces="0"
+											value="#{multasBean.multa.g3Multa}"
+											title="Peso aferido no eixo do veículo">
+
+											<p:ajax event="blur"
+												listener="#{multasBean.capturaPesosG3()}"
+												update="diferencaG3 mensagemG3 mensagemG2" />
+										</p:inputNumber>
+									</p:row>
+
+									<p:row>
+										<p:inputNumber value="#{multasBean.multa.g3}" disabled="true"
+											size="13" decimalPlaces="0"
+											title="Limite regulamentado do eixo + a tolerância de 10%" />
+
+									</p:row>
+
+									<p:row>
+										<p:inputNumber id="diferencaG3"
+											value="#{multasBean.multa.g3Diferenca}" decimalPlaces="0"
+											size="8" disabled="true" styleClass="ui-menuitem-text"
+											title="Diferença entre a medição realizada  e  limite regulamentado com tolerância de 10%" />
+									</p:row>
+
+
+									<p:row>
+										<p:inputText id="mensagemG3"
+											value="#{multasBean.multa.mensagemG3}" size="47"
+											disabled="true" title="#{multasBean.multa.mensagemG3}" />
+									</p:row>
+
+									<p:row>
+										<p:outputLabel for="g4Multa" value="G4" style="font-size:13px" />
+									</p:row>
+
+
+									<p:row>
+										<p:inputNumber id="g4Multa" size="13"
+											value="#{multasBean.multa.g4Multa}" decimalPlaces="0"
+											title="Peso aferido no eixo do veículo">
+
+											<p:ajax event="blur"
+												update="diferencaG4 mensagemG4 mensagemG3 mensagemG2"
+												listener="#{multasBean.capturaPesosG4()}" />
+											<p:ajax event="blur" update="imagePanel"
+												listener="#{multasBean.capturaPesosG4()}" />
+										</p:inputNumber>
+									</p:row>
+
+									<p:row>
+										<p:inputNumber value="#{multasBean.multa.g4}" disabled="true"
+											size="13" decimalPlaces="0"
+											title="Limite regulamentado do eixo + a tolerância de 10%" />
+
+									</p:row>
+
+									<p:row>
+										<p:inputNumber id="diferencaG4"
+											value="#{multasBean.multa.g4Diferenca}" decimalPlaces="0"
+											size="8" disabled="true" styleClass="ui-menuitem-text"
+											title="Diferença entre a medição realizada  e  limite regulamentado com tolerância de 10%" />
+									</p:row>
+
+
+									<p:row>
+										<p:inputText id="mensagemG4"
+											value="#{multasBean.multa.mensagemG4}" size="47"
+											disabled="true" title="#{multasBean.multa.mensagemG4}" />
+									</p:row>
+
+									<p:row>
+										<p:outputLabel for="g5Multa" value="G5" style="font-size:13px" />
+									</p:row>
+
+
+									<p:row>
+										<p:inputNumber id="g5Multa" size="13" decimalPlaces="0"
+											value="#{multasBean.multa.g5Multa}"
+											title="Peso aferido no eixo do veículo">
+
+											<p:ajax event="blur"
+												update="diferencaG5 mensagemG5 mensagemG4 mensagemG3 mensagemG2"
+												listener="#{multasBean.capturaPesosG5()}" />
+										</p:inputNumber>
+									</p:row>
+
+									<p:row>
+										<p:inputNumber value="#{multasBean.multa.g5}" disabled="true"
+											size="13" decimalPlaces="0"
+											title="Limite regulamentado do eixo + a tolerância de 10%" />
+
+									</p:row>
+
+									<p:row>
+										<p:inputNumber id="diferencaG5"
+											value="#{multasBean.multa.g5Diferenca}" decimalPlaces="0"
+											size="8" disabled="true" styleClass="ui-menuitem-text"
+											title="Diferença entre a medição realizada  e  limite regulamentado com tolerância de 10%" />
+									</p:row>
+
+
+									<p:row>
+										<p:inputText id="mensagemG5"
+											value="#{multasBean.multa.mensagemG5}" size="47"
+											disabled="true" title="#{multasBean.multa.mensagemG5}" />
+									</p:row>
+
+
+									<p:row>
+										<p:outputLabel for="g6Multa" value="G6" style="font-size:13px" />
+									</p:row>
+
+
+									<p:row>
+										<p:inputNumber id="g6Multa" size="13"
+											value="#{multasBean.multa.g6Multa}" decimalPlaces="0"
+											title="Peso aferido no eixo do veículo">
+											<p:ajax event="blur"
+												update="diferencaG6 mensagemG6 mensagemG5 mensagemG4 mensagemG3"
+												listener="#{multasBean.capturaPesosG6()}" />
+										</p:inputNumber>
+									</p:row>
+
+									<p:row>
+										<p:inputNumber value="#{multasBean.multa.g6}" disabled="true"
+											size="13" decimalPlaces="0"
+											title="Limite regulamentado do eixo + a tolerância de 10%" />
+
+									</p:row>
+
+									<p:row>
+										<p:inputNumber id="diferencaG6"
+											value="#{multasBean.multa.g6Diferenca}" decimalPlaces="0"
+											size="8" disabled="true" styleClass="ui-menuitem-text"
+											title="Diferença entre a medição realizada  e  limite regulamentado com tolerância de 10%" />
+									</p:row>
+
+
+									<p:row>
+										<p:inputText id="mensagemG6"
+											value="#{multasBean.multa.mensagemG6}" size="47"
+											disabled="true" title="#{multasBean.multa.mensagemG6}" />
+									</p:row>
+
+
+
+									<p:row>
+										<p:outputLabel for="g7Multa" value="G7" style="font-size:13px" />
+									</p:row>
+
+
+									<p:row>
+										<p:inputNumber id="g7Multa" size="13"
+											value="#{multasBean.multa.g7Multa}" decimalPlaces="0"
+											title="Peso aferido no eixo do veículo">
+
+											<p:ajax event="blur"
+												update="diferencaG7 mensagemG7 mensagemG6 mensagemG5"
+												listener="#{multasBean.capturaPesosG7()}" />
+										</p:inputNumber>
+									</p:row>
+
+									<p:row>
+										<p:inputNumber value="#{multasBean.multa.g7}" disabled="true"
+											size="13" decimalPlaces="0"
+											title="Limite regulamentado do eixo + a tolerância de 10%" />
+
+									</p:row>
+
+									<p:row>
+										<p:inputNumber id="diferencaG7"
+											value="#{multasBean.multa.g7Diferenca}" decimalPlaces="0"
+											size="8" disabled="true" styleClass="ui-menuitem-text"
+											title="Diferença entre a medição realizada  e  limite regulamentado com tolerância de 10%" />
+									</p:row>
+
+
+									<p:row>
+										<p:inputText id="mensagemG7"
+											value="#{multasBean.multa.mensagemG7}" size="47"
+											disabled="true" title="#{multasBean.multa.mensagemG7}" />
+									</p:row>
+
+								</h:panelGrid>
+
+								<p:panelGrid id="observacao" columns="2">
+									<f:facet name="footer">
+										<p:outputLabel value=" Observação :" style="margin-left:3px" />
+										<h:inputTextarea value="#{multasBean.multa.observacao}"
+											title="Observações importantes sobre o auto que precisam ser registradas"
+											style="width:660px; height:30px"
+											converter="upperCaseConverter">
+											<p:ajax event="blur" update="@this" />
+										</h:inputTextarea>
+									</f:facet>
+								</p:panelGrid>
+
+							</h:panelGrid>
+
+							<p:panelGrid id="obsDer" columns="2"
+								style="width:auto; height:auto;"
+								rendered="#{multasBean.exibir2}">
+								<h:outputLabel value="Excesso Peso por Eixo:  "
+									style="text-align:center" />
+								<p:inputNumber value="#{multasBean.multa.excessoDiverso}"
+									size="8"
+									title="Quantidade em quilos de excesso de peso por eixo onde não foi possível identificar o eixo">
+									<p:ajax event="blur" />
+								</p:inputNumber>
+								<h:outputLabel value="Observação: " style="text-align:center" />
+								<p:inputTextarea value="#{multasBean.multa.observacao}"
+									title="Observações importantes sobre o auto que precisam ser registradas"
+									rows="19" size="190" converter="upperCaseConverter" cols="85">
+									<p:ajax event="blur" update="@this" />
+								</p:inputTextarea>
+
+							</p:panelGrid>
+						</p:column>
+
+
+					</p:panelGrid>
+
+					<!-- 					finaliza o panel de 1 columas -->
+
+
+					<p:panelGrid columns="6">
+						<p:commandButton value="Salvar"
+							actionListener="#{multasBean.salvar()}"
+							update=":msg :formCadastro:painel :formListagem:tabela" />
+
+						<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();">
+
+						</p:commandButton>
+
+						<p:commandButton value="Limpar"
+							actionListener="#{multasBean.novo()}" process="@form"
+							update="formCadastro">
+
+						</p:commandButton>
+						<p:separator></p:separator>
+
+						<p:commandButton value="Ajuda">
+
+						</p:commandButton>
+
+
+					</p:panelGrid>
+				</div>
+			</h:form>
+
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

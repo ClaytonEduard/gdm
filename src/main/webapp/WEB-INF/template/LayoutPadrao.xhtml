@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta name="viewport" http-equiv="Content-Type"
+		content="text/html; charset=UTF-8 width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no" />
+	<meta name="keywords"
+		content="css4html, css+for+html, css 4 html, css4, css4 html, css, css3, html, html5" />
+
+	<meta content="no-cache" http-equiv="Pragma"></meta>
+	<meta content="no-cache, no-store, must-revalidate"
+		http-equiv="Cache-Control"></meta>
+	<meta content="0" http-equiv="Expires"></meta>
+	<meta content="pt_BR"> </meta>
+	<title><ui:insert name="titulo">Sistema de Multas</ui:insert></title>
+	<h:outputStylesheet library="css" name="sistema.css" />
+	<h:outputScript library="js" name="jquery.maskMoney.js" />
+	<link rel="stylesheet"
+		href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" />
+	<link rel="stylesheet"
+		href="https://use.fontawesome.com/releases/v5.5.0/css/v4-shims.css" />
+	<script>
+	PrimeFaces.locales['pt'] = {
+	    closeText: 'Fechar',
+	    prevText: 'Anterior',
+	    nextText: 'Próximo',
+	    currentText: 'Começo',
+	    monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+	    monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun', 'Jul','Ago','Set','Out','Nov','Dez'],
+	    dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+	    dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'],
+	    dayNamesMin: ['D','S','T','Q','Q','S','S'],
+	    weekHeader: 'Semana',
+	    firstDay: 0,
+	    isRTL: false,
+	    showMonthAfterYear: false,
+	    yearSuffix: '',
+	    timeOnlyTitle: 'Só Horas',
+	    timeText: 'Tempo',
+	    hourText: 'Hora',
+	    minuteText: 'Minuto',
+	    secondText: 'Segundo',
+	    ampm: false,
+	    month: 'Mês',
+	    week: 'Semana',
+	    day: 'Dia',
+	    allDayText : 'Todo o Dia'
+	};
+	</script>
+
+
+</h:head>
+<h:body>
+	<p:growl id="msgOrgao" sticky="true" life="1600" />
+	<p:growl id="msg" />
+	<p:ajaxStatus styleClass="ajax-status" onsuccess="configurarMoeda()">
+		<f:facet name="start">
+			<h:graphicImage library="images" name="loading.gif" />
+		</f:facet>
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
+
+	<header>
+
+		<div style="float: left">
+			<h:link outcome="/home">
+				<h:graphicImage library="images" name="logo_250x50.png"
+					width="130px" height="40px" />
+
+			</h:link>
+			<span
+				style="float: right; height: 30px; line-height: 30px; margin-right: 60px; margin-top: 5px">
+				Olá <h:outputText
+					value="#{autenticacaoBean.usuarioLogado.pessoa.nome}" />
+			</span>
+		</div>
+
+		<input type="checkbox" id="control-nav" /> <label for="control-nav"
+			class="control-nav" /> <label for="control-nav"
+			class="control-nav-close" />
+		<nav class="fR">
+			<div style="float: right; margin-right: 110px; color: black;">
+
+				<ul class="l2">
+
+					<h:form enctype="multipart/form-data">
+
+						<p:menubar styleClass="menu-sistema">
+
+							<p:menuitem value="Home" outcome="/home.xhtml" icon="fa fa-home" />
+
+							<p:submenu label="Multas" icon="fa fa-file-signature"
+								rendered="#{autenticacaoBean.permissaoModulo(['GDM'])}">
+								<p:menuitem value="Multas" outcome="/pages/multas/multa.xhtml"
+									rendered="#{autenticacaoBean.temPermissoes(['Administrador','Gerente','Usuário','Programador'])}" />
+							</p:submenu>
+
+							<p:submenu label="Vistoria" icon="fa fa-clipboard-list"
+								rendered="#{autenticacaoBean.permissaoModulo(['VISTORIA'])}">
+								<p:menuitem value="Vistoria"
+									rendered="#{autenticacaoBean.temPermissoes(['Administrador','Gerente','Usuário','Programador'])}"
+									outcome="/pages/cadastro/vistoria.xhtml" />
+							</p:submenu>
+
+							<p:submenu label="Cadastros Diversos" icon="fa fa-edit"
+								>
+								<p:submenu label="Grupos Primários" icon="fa fa-cog">
+									<p:menuitem value="Grupo CNAE" icon="fa fa-contao"
+										outcome="/pages/cadastro/grupocnae.xhtml"
+										rendered="#{autenticacaoBean.temPermissoes(['Programador'])}" />
+									<p:menuitem value="Categoria Produtos" icon="fa fa-cube"
+										outcome="/pages/cadastro/categoriaproduto.xhtml"
+										rendered="#{autenticacaoBean.temPermissoes(['Programador'])}" />
+									<p:separator />
+									<p:menuitem value="Categoria Serviço" icon="fa fa-server"
+										outcome="/pages/cadastro/funcaoServico.xhtml"
+										rendered="#{autenticacaoBean.temPermissoes(['Programador'])}" />
+									<p:separator />
+									<p:menuitem value="Estado" icon="fa fa-flag-usa"
+										outcome="/pages/cadastro/estado.xhtml" />
+									<p:separator />
+									<p:menuitem value="Pessoa Juridíca" icon="fa fa-building"
+										outcome="/pages/cadastro/empresa.xhtml" />
+									<p:separator />
+									<p:menuitem value="Permissão Modulo"
+										icon="fa fa-universal-access"
+										outcome="/pages/cadastro/permissaomodulo.xhtml"
+										rendered="#{autenticacaoBean.temPermissoes(['Programador'])}" />
+									<p:separator />
+									<p:menuitem value="Orgão de transito" icon="fa fa-dice-d20"
+										outcome="/pages/cadastro/orgao.xthml" />
+									<p:separator />
+
+									<p:menuitem value="Transportadora" icon="fa fa-briefcase"
+										outcome="/pages/cadastro/transportadora.xhtml" />
+								</p:submenu>
+								<p:separator />
+								<p:submenu label="Grupos Secundários" icon="fa fa-cogs"
+									rendered="#{autenticacaoBean.temPermissoes(['Administrador', 'Programador'])}">
+									<p:separator />
+									<p:menuitem value="Classe CNAE" icon="fa fa-concierge-bell"
+										outcome="/pages/cadastro/classecnae.xhtml" />
+									<p:separator />
+									<p:menuitem value="Cidades" icon="fa fa-city"
+										outcome="/pages/cadastro/cidades.xhtml" />
+									<p:separator />
+									<p:menuitem value="Pessoa Fisíca" icon="fa fa-user-plus"
+										outcome="/pages/cadastro/pessoa.xhtml" />
+									<p:separator />
+									<p:menuitem value="Produtos" icon="fa fa-cubes"
+										outcome="/pages/cadastro/produto.xhtml" />
+									<p:separator />
+									<p:menuitem value="Serviço" icon="fa fa-bookmark" />
+									<p:separator />
+									<p:menuitem value="Tolerância" icon="fa fa-eject"
+										outcome="/pages/cadastro/tolerancia.xhtml" />
+									<p:separator />
+									<p:menuitem value="Usuário" icon="fa fa-user-circle"
+										outcome="/pages/cadastro/usuario.xhtml" />
+									<p:separator />
+									<p:submenu label="Grupo Veiculos"
+										rendered="#{autenticacaoBean.temPermissoes(['Administrador', 'Programador'])}">
+										<p:separator />
+										<p:menuitem value="Veículo" icon="fa fa-truck"
+											outcome="/pages/cadastro/veiculo.xhtml" />
+										<p:separator />
+										<p:menuitem value="Conjunto" icon="fa fa-truck-loading"
+											outcome="/pages/cadastro/conjunto.xhtml" />
+										<p:separator />
+										<p:menuitem value="Tipo Conjunto" icon="fa fa-truck"
+											outcome="/pages/cadastro/tipoconjunto.xhtml" />
+										<p:separator />
+									</p:submenu>
+								</p:submenu>
+							</p:submenu>
+
+							<p:submenu label="Indicadores" icon="fa fa-chart-pie"
+								rendered="#{autenticacaoBean.temPermissoes(['Administrador', 'Programador' , 'Usuário'])}">
+								<p:menuitem value="Multas"
+									outcome="/pages/relatorio/graficos.xhtml" />
+							</p:submenu>
+
+							<p:submenu label="Suporte" icon="fa fa-info-circle">
+								<p:menuitem>
+									<a href="http://contato@galcond.com" target="_blank">Suporte
+									</a>
+								</p:menuitem>
+							</p:submenu>
+
+							<p:menuitem value="Sair" icon="fa fa-sign-out"
+								actionListener="#{autenticacaoBean.sair()}"
+								outcome="/login.xhtml" />
+
+
+
+
+						</p:menubar>
+
+					</h:form>
+				</ul>
+			</div>
+			<div style="clear: both"></div>
+
+		</nav>
+	</header>
+
+	<div id="conteudo">
+		<ui:insert name="corpo" />
+	</div>
+
+	<!-- 	<p:separator style="margin-top: 20px" /> -->
+
+	<!-- 	<footer> -->
+	<!-- 		Sistemas Comerciais <br></br> Galcond 2018 <br></br> <a -->
+	<!-- 			href="http://gdm.com.br" target="_blank">www.gdm.com.br</a><br></br> -->
+	<!-- 		<a href="http://galcond.com" target="_blank">www.galcond.com </a> -->
+	<!-- 	</footer> -->
+
+	<script>
+		function configurarMoeda() {
+			$(".moeda").maskMoney({
+				decimal : ",",
+				thousands : ".",
+				allowZero : true
+			});
+		}
+
+		$(document).ready(function() {
+			configurarMoeda()
+		});
+	</script>
+
+
+
+
+</h:body>
+
+
+
+
+</html>

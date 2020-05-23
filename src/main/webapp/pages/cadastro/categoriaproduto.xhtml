@@ -1,0 +1,96 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<ui:define name="titulo">Categoria Produto</ui:define>
+
+	<ui:define name="corpo">
+		<!-- 		<p:growl id="msg" /> -->
+		<h:form id="formListagem">
+			<p:panel header="Categoria Produto - Listagem">
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					paginator="true" rows="10" paginatorPosition="bottom"
+					value="#{categoriaProdutoBean.categoriaProdutos}"
+					style="text-align: center;" var="categoriaProduto">
+
+					<f:facet name="header">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							actionListener="#{categoriaProdutoBean.novo}"
+							update=":formCadastro:painel"
+							rendered="#{autenticacaoBean.temPermissoes(['Administrador','Gerente','Usuário','Programador'])}">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</f:facet>
+
+					<p:column headerText="Opções" width="100">
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{categoriaProdutoBean.excluir}"
+							update=":msg :formListagem:tabela"
+							rendered="#{autenticacaoBean.temPermissoes(['Administrador','Gerente','Usuário'])}">
+							<p:confirm header="Confirmação"
+								message="Deseja excluir este orgão?" icon="ui-icon-alert" />
+							<f:attribute name="categoriaProdutoSelecionada"
+								value="#{categoriaProduto}" />
+						</p:commandButton>
+
+
+						<p:commandButton icon="ui-icon-pencil" update=":formCadastro"
+							actionListener="#{categoriaProdutoBean.editar}"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="categoriaProdutoSelecionada"
+								value="#{categoriaProduto}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</p:column>
+
+
+					<p:column headerText="Descrição"
+						sortBy="#{categoriaProduto.descricao}"
+						filterBy="#{categoriaProduto.descricao}">
+						<h:outputText value="#{categoriaProduto.descricao}" />
+					</p:column>
+
+				</p:dataTable>
+				<!-- Efeitos para saida de tela sao = blind, bounce, clip, drop, explode, fold, highlight, puff, pulsate,
+scale, shake, size and slide. -->
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+		</h:form>
+
+
+		<p:dialog header="Categoria Produto - Cadastro" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true" closable="false">
+			<h:form id="formCadastro">
+				<h:panelGrid id="painel" columns="2">
+
+					<p:outputLabel value="Descrição: " for="descricao" />
+					<p:inputText maxlength="150" size="50" id="descricao"
+						required="true" rendered="true"
+						value="#{categoriaProdutoBean.categoriaProduto.descricao}"
+						converter="upperCaseConverter">
+						<p:ajax event="blur" update="@this" />
+					</p:inputText>
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{categoriaProdutoBean.salvar()}"
+						update=":msg :formCadastro:painel :formListagem:tabela" />
+					<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();"
+						update=":formCadastro:painel" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

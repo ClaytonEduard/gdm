@@ -1,0 +1,5 @@
+content_assist_parameters_background=255,255,255
+content_assist_parameters_foreground=0,0,0
+content_assist_proposals_background=255,255,255
+content_assist_proposals_foreground=0,0,0
+eclipse.preferences.version=1

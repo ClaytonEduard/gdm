@@ -1,0 +1,198 @@
+@charset "utf-8";
+
+/* body é o corpo da pagina, nao terá margin pois e 0 */
+body {
+	font-size: 12px;
+	font-family: Arial, Helvetica, sans-serif;
+	margin: 0px;
+	font-weight: normal;
+	height: 100%;
+}
+/* header */
+header {
+	padding: 5px 0px;
+	margin-bottom: 20px;
+	height: 40px;
+	background-color: #D3D3D3;
+	color: black;
+	box-shadow: 0px 2px 2px #ccc; /* sombra na faixao */
+	min-height: 60px;
+	
+}
+
+/*header {
+	padding: 5px 0px;
+	margin-bottom: 20px;
+	height: 40px;
+	background-color: #D3D3D3;
+	color: black;
+	box-shadow: 0px 2px 2px #ccc; /* sombra na faixao */
+}*/
+
+header>div {
+	margin-left: 8px
+}
+/* para referenciar um elemento so usa-se # + o ID */
+#conteudo {
+	padding: 0px 8px
+}
+
+footer {
+	padding: 0px 8px;
+	margin-bottom: 10px
+}
+
+h1 {
+	font-size: 24px;
+	font-weight: 500;
+	padding: 0px;
+	margin: 0px;
+}
+
+#login-dialog {
+	width: 290px;
+	margin: none !important;
+	padding: .0em .0em .0em 0em !important;
+	border: none !important;
+	border-bottom: none !important;
+	position: center;
+}
+
+/*usa-se o ponto para style classe e # para id */
+.grid-login {
+	border-radius: 8px;
+	border: 1px solid #ccc;
+	margin-top: 8px;
+	padding: 10px !important;
+	border-radius: 8px;
+}
+
+#login {
+	position: center;
+	margin-top: 0px !important;
+}
+
+.grid-login2 {
+	background-color: #f2f2f2, -0;
+	border-radius: 0px;
+	border: 0px !important;
+	margin-top: 0px !important;
+	padding: 0px solid #f2f2f2;
+	border-radius: 0px;
+}
+
+.rotulo {
+	width: 150px;
+}
+
+.ui-panelgrid td {
+	height: 34px
+}
+
+.ajax-status {
+	position: fixed;
+	top: 55px;
+	right: 10px;
+	width: 35px;
+	height: 35px
+}
+
+.ui-selectmanycheckbox td {
+	border-width: 0px !important;
+	padding: 0px !important;
+}
+
+.ui-selectmanycheckbox td label {
+	padding-right: 10px;
+}
+
+.produto-tabela input {
+	width: 99%;
+}
+
+/* Customiza TabView - início */
+.ui-tabs .ui-tabs-panel {
+	padding: 0.5em 0.2em !important;
+}
+
+.ui-tabs {
+	padding: 0px !important;
+}
+
+/* reduzir o tamanho de todos componetes do primefaces*/
+.ui-widget, .ui-widget .ui-widget {
+	fonte-size: 60% !important;
+}
+
+.ui-tabs .ui-tabs-nav {
+	margin: -1px !important;
+}
+
+.ui-tabs.ui-tabs-top>.ui-tabs-nav {
+	padding: 0px !important;
+}
+
+/* Menu sistema inicio */
+.menu-sistema {
+	margin-top: 5px;
+	border: 0px !important;
+	padding: 0px !important;
+	background: none !important;
+}
+
+.menu-sistema .ui-menu-parent>a .ui-menuitem-text, .menu-sistema>.ui-menu-list>.ui-menuitem>a>.ui-menuitem-text
+	{
+	color: black !important;
+}
+
+.img {
+	max-width: 100%;
+	position: absolute;
+}
+
+* {
+	margin: 0px;
+	padding: 0px;
+}
+
+.exec {
+	color: white !important;
+}
+
+.menu-sistema .ui-icon-triangle-1-s {
+	background: url(#{ resource [ 'images:seta-para-baixo.png' ]
+}
+
+.alinhaTexto {
+	text-align: left;
+	position: !important;
+}
+
+.semBorda tr, .semBorda td {
+	border: none !important;
+	margin-top: 2px !important;
+}
+
+)
+no-repeat
+ ; inputText.fontBranca {
+	color: white;
+}
+
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+}
+
+.ui-outputlabel {
+	font-weight: bold;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+}

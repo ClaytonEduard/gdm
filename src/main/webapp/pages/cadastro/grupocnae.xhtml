@@ -1,0 +1,106 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<ui:define name="titulo">Grupo CNAE</ui:define>
+
+	<ui:define name="corpo">
+		<p:growl id="msgGrupoCnae" />
+		<h:form id="formListagem">
+			<p:panel header="Grupo CNAE - Listagem">
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					paginator="true" rows="10" paginatorPosition="bottom"
+					value="#{grupoCNAEBean.grupoCnaes}" var="grupoCNAE"
+					style="text-align:center">
+
+					<f:facet name="header">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							actionListener="#{grupoCNAEBean.novo}"
+							update=":formCadastro:painel">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</f:facet>
+
+
+
+					<p:column headerText="Opções" width="100">
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{grupoCNAEBean.excluir}"
+							update=":msgGrupoCnae :formListagem:tabela">
+							<p:confirm header="Confirmação"
+								message="Deseja excluir este Grupo?" icon="ui-icon-alert" />
+							<f:attribute name="grupoCnae" value="#{grupoCNAE}" />
+						</p:commandButton>
+
+
+						<p:commandButton icon="ui-icon-pencil" update=":formCadastro"
+							actionListener="#{grupoCNAEBean.editar}"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="grupoCnae" value="#{grupoCNAE}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</p:column>
+					<p:column headerText="Grupo" sortBy="#{grupoCNAE.grupo}"
+						filterBy="#{grupoCNAE.grupo}">
+						<h:outputText value="#{grupoCNAE.grupo}" />
+					</p:column>
+
+					<p:column headerText="Denominação"
+						sortBy="#{grupoCNAE.denominacao}"
+						filterBy="#{grupoCNAE.denominacao}">
+						<h:outputText value="#{grupoCNAE.denominacao}" />
+					</p:column>
+
+
+				</p:dataTable>
+				<!-- Efeitos para saida de tela sao = blind, bounce, clip, drop, explode, fold, highlight, puff, pulsate,
+scale, shake, size and slide. -->
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+		</h:form>
+
+
+		<p:dialog header="Grupo CNAE - Cadastro" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true" closable="false">
+			<h:form id="formCadastro">
+				<h:panelGrid id="painel" columns="2">
+
+					<p:outputLabel value="Grupo: " for="grupo" />
+					<p:inputText maxlength="6" size="6" id="grupo" required="true"
+						rendered="true" value="#{grupoCNAEBean.grupoCNAE.grupo}"
+						converter="upperCaseConverter">
+						<p:ajax event="blur" update="@this" />
+					</p:inputText>
+
+
+					<p:outputLabel value="Denominação: " for="denominacao" />
+					<p:inputText maxlength="100" size="75" id="denominacao"
+						required="true" rendered="true"
+						value="#{grupoCNAEBean.grupoCNAE.denominacao}"
+						converter="upperCaseConverter">
+						<p:ajax event="blur" update="@this" />
+					</p:inputText>
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{grupoCNAEBean.salvar()}"
+						update=":msgGrupoCnae :formCadastro:painel :formListagem:tabela" />
+					<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();"
+						update=":formCadastro:painel" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

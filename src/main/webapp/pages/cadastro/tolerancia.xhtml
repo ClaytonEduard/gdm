@@ -1,0 +1,95 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<ui:define name="titulo">Tolerância</ui:define>
+
+	<ui:define name="corpo">
+		<!-- 		<p:growl id="msg" /> -->
+		<h:form id="formListagem">
+			<p:panel header="Tolerância - Listagem">
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado!"
+					paginator="true" value="#{toleranciaBean.tolerancias}" style="text-align: center;"
+					var="tolerancia" rows="10" paginatorPosition="bottom">
+					<f:facet name="header">
+						<p:commandButton value="Novo" icon="fa fa-plus"
+							oncomplete="PF('dialogo').show();"
+							actionListener="#{toleranciaBean.novo()}" update=":formCadastro">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</f:facet>
+					<p:column headerText="Opções" width="100">
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{toleranciaBean.excluir}"
+							update=":msg :formListagem:tabela">
+							<p:confirm header="Confirmação"
+								message="Deseja excluir este orgão?" icon="ui-icon-alert" />
+							<f:attribute name="toleranciaSelecionada" value="#{tolerancia}" />
+						</p:commandButton>
+
+
+						<p:commandButton icon="ui-icon-pencil" update=":formCadastro"
+							actionListener="#{toleranciaBean.editar}"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="toleranciaSelecionada" value="#{tolerancia}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</p:column>
+
+
+
+					<p:column headerText="Descrição: " sortBy="#{tolerancia.descricao}"
+						filterBy="#{tolerancia.descricao}">
+						<h:outputText value="#{tolerancia.descricao}" />
+					</p:column>
+
+					<p:column headerText="Valor Tolerância"
+						sortBy="#{tolerancia.numero}" filterBy="#{tolerancia.numero}">
+						<h:outputText value="#{tolerancia.numero} %">
+							<f:convertNumber minFractionDigits="0" integerOnly="true"
+								locale="pt-br" />
+						</h:outputText>
+					</p:column>
+
+
+				</p:dataTable>
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+		</h:form>
+		<p:dialog header="Tolerância - Cadastro" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true" closable="false">
+			<h:form id="formCadastro">
+				<h:panelGrid id="painel" columns="2">
+					<p:outputLabel value="Descrição: " for="descricao" />
+					<p:inputText maxlength="150" size="50" id="descricao"
+						required="true" value="#{toleranciaBean.tolerancia.descricao}"
+						converter="upperCaseConverter">
+						<p:ajax event="blur" update="@this" />
+					</p:inputText>
+
+					<p:outputLabel value="Porcentagem: " for="porcentagem" />
+					<p:inputNumber maxlength="10" size="10" id="porcentagem"
+						value="#{toleranciaBean.tolerancia.numero}" required="true" />
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{toleranciaBean.salvar()}"
+						update=":msg :formCadastro:painel :formListagem:tabela" />
+					<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

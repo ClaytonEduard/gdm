@@ -1,0 +1,85 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<ui:define name="titulo">Lançamento Função Serviço</ui:define>
+
+	<ui:define name="corpo">
+
+		<h:form id="formListagem">
+			<p:panel header="Função - Listagem">
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado!"
+					paginator="true" value="#{funcaoServicoBean.funcoesServicos}"
+					var="funcaoServico" rows="10" paginatorPosition="bottom">
+
+					<f:facet name="header">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							actionListener="#{funcaoServicoBean.novo}" update=":formCadastro">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</f:facet>
+					
+					<p:column headerText="Opções" width="100" style="text-align: center;" >
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{funcaoServicoBean.excluir}"
+							update=":msg :formListagem:tabela">
+							<p:confirm header="Confirmação"
+								message="Deseja excluir esta função?" icon="ui-icon-alert" />
+							<f:attribute name="funcaoServicoSelecionada"
+								value="#{funcaoServico}" />
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-pencil"
+							update=":formCadastro:painel"
+							actionListener="#{funcaoServicoBean.editar}"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="funcaoServicoSelecionada"
+								value="#{funcaoServico}" />
+
+						</p:commandButton>
+					</p:column>
+					<p:column headerText="Descrição"
+						sortBy="#{funcaoServico.descricao}"
+						filterBy="#{funcaoServico.descricao}">
+						<h:outputText value="#{funcaoServico.descricao}" />
+					</p:column>
+
+					
+				</p:dataTable>
+
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+		</h:form>
+		<p:dialog header="Função Serviço - Cadastro" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true" closable="false">
+			<h:form id="formCadastro">
+				<h:panelGrid id="painel" columns="2">
+					<p:outputLabel value="Descrição:" for="descricao" />
+					<p:inputText maxlength="50" size="30" id="descricao"
+						required="true" requiredMessage="Favor inserir uma descrição"
+						value="#{funcaoServicoBean.funcaoServico.descricao}" type="text"
+						converter="upperCaseConverter">
+						<p:ajax event="blur" update="@this" />
+					</p:inputText>
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{funcaoServicoBean.salvar()}"
+						update=":msg :formCadastro:painel :formListagem:tabela" />
+					<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

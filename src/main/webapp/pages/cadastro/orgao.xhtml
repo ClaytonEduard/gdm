@@ -1,0 +1,115 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<ui:define name="titulo">Orgão</ui:define>
+
+	<ui:define name="corpo">
+		<!-- 		<p:growl id="msg" /> -->
+		<h:form id="formListagem">
+			<p:panel header="Orgão - Listagem">
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					paginator="true" value="#{orgaoBean.orgaos}" var="orgao" rows="10"
+					style="text-align: center;" paginatorPosition="bottom">
+
+
+					<f:facet name="header">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							actionListener="#{orgaoBean.novo}" update=":formCadastro:painel">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</f:facet>
+					<p:column headerText="Opções" width="100">
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{orgaoBean.excluir}"
+							update=":msg :formListagem:tabela">
+							<p:confirm header="Confirmação"
+								message="Deseja excluir este orgão?" icon="ui-icon-alert" />
+							<f:attribute name="orgaoSelecionado" value="#{orgao}" />
+						</p:commandButton>
+
+
+						<p:commandButton icon="ui-icon-pencil" update=":formCadastro"
+							actionListener="#{orgaoBean.editar}"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="orgaoSelecionado" value="#{orgao}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</p:column>
+
+					<p:column headerText="Nome: " sortBy="#{orgao.nome}"
+						filterBy="#{orgao.nome}">
+						<h:outputText value="#{orgao.nome}" />
+					</p:column>
+
+					<p:column headerText="Descrição: " sortBy="#{orgao.descricao}"
+						filterBy="#{orgao.descricao}">
+						<h:outputText value="#{orgao.descricao}" />
+					</p:column>
+
+					<p:column headerText="Atuação: "
+						sortBy="#{orgao.tipoFormatadoOrgao}" style="text-align: center;"
+						filterBy="#{orgao.tipoFormatadoOrgao}">
+						<h:outputText value="#{orgao.tipoFormatadoOrgao}" />
+					</p:column>
+
+
+				</p:dataTable>
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+		</h:form>
+
+
+		<p:dialog header="Orgãos - Cadastro" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true" closable="false">
+			<h:form id="formCadastro">
+				<h:panelGrid id="painel" columns="2">
+					<p:outputLabel value="Nome: " for="nome" />
+					<p:inputText maxlength="30" size="30" id="nome" required="true"
+						requiredMessage="O campo Nome é obrigatório!"
+						value="#{orgaoBean.orgao.nome}" converter="upperCaseConverter">
+						<p:ajax event="blur" update="@this" />
+					</p:inputText>
+
+
+					<p:outputLabel value="Descrição: " for="descricao" />
+					<p:inputText maxlength="150" size="30" id="descricao"
+						required="true" requiredMessage="O campo descrição é obrigatório!"
+						value="#{orgaoBean.orgao.descricao}"
+						converter="upperCaseConverter">
+						<p:ajax event="blur" update="@this" />
+					</p:inputText>
+
+
+					<p:outputLabel value="Atuação: " for="atuacao" />
+					<p:selectOneMenu id="atuacao" required="true"
+						requiredMessage="O campo atuação é obrigatório!"
+						value="#{orgaoBean.orgao.atuacao}">
+						<f:selectItem itemLabel="Selecione uma Atuação"
+							noSelectionOption="true" />
+						<f:selectItem itemLabel="ESTADUAL" itemValue="E" />
+						<f:selectItem itemLabel="NACIONAL" itemValue="N" />
+					</p:selectOneMenu>
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{orgaoBean.salvar}"
+						update=":msg :formCadastro:painel :formListagem:tabela" />
+					<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

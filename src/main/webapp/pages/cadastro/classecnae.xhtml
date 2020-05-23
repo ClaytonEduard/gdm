@@ -1,0 +1,124 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Classe CNAE</ui:define>
+
+	<ui:define name="corpo">
+		<!-- 		<p:growl id="msg" /> -->
+		<h:form id="formListagem">
+			<p:panel header="Classe CNAE - Listagem">
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					paginator="true" value="#{classeCNAEBean.classeCNAEs}"
+					var="classeCNAE" rows="10" style="text-align:center">
+
+					<f:facet name="header">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							actionListener="#{classeCNAEBean.novo()}"
+							update=":msg :formCadastro:painel">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</f:facet>
+
+					<p:column headerText="Opções" width="100">
+
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{classeCNAEBean.excluir()}"
+							update=":msg :formListagem:tabela">
+							<p:confirm header="Confirmação"
+								message="Deseja excluir a classe
+							?" icon="ui-icon-alert" />
+							<f:attribute name="classeCNAE" value="#{classeCNAE}" />
+						</p:commandButton>
+
+
+						<p:commandButton icon="ui-icon-pencil"
+							update=":msg :formCadastro:painel"
+							actionListener="#{classeCNAEBean.editar}"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="classeCNAE" value="#{classeCNAE}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+					</p:column>
+
+					<p:column headerText="Grupo"
+						sortBy="#{classeCNAE.grupoCNAE.denominacao}"
+						filterBy="#{classeCNAE.grupoCNAE.denominacao}">
+						<h:outputText value="#{classeCNAE.grupoCNAE.grupo}" />
+						<h:outputText value=" - " />
+						<h:outputText value="#{classeCNAE.grupoCNAE.denominacao}" />
+					</p:column>
+
+					<p:column headerText="Classe" sortBy="#{classeCNAE.classe}"
+						filterBy="#{classeCNAE.classe}">
+						<h:outputText value="#{classeCNAE.classe}" />
+					</p:column>
+					<p:column headerText="Denominação"
+						sortBy="#{classeCNAE.denominacao}"
+						filterBy="#{classeCNAE.denominacao}">
+						<h:outputText value="#{classeCNAE.denominacao}" />
+					</p:column>
+
+
+
+
+				</p:dataTable>
+
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Classe CNAE - Cadastro" widgetVar="dialogo"
+			draggable="true" resizable="false" modal="true" closable="false">
+			<h:form id="formCadastro">
+				<h:panelGrid id="painel" columns="2">
+					<p:outputLabel value="Grupo" for="grupo" />
+					<p:selectOneMenu filter="true" id="grupo" required="true"
+						value="#{classeCNAEBean.classeCNAE.grupoCNAE}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione um Grupo CNAE" />
+						<f:selectItems value="#{classeCNAEBean.grupoCNAEs}" var="grupo"
+							itemValue="#{grupo}"
+							itemLabel="#{grupo.grupo} - #{grupo.denominacao}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Classe" for="classe" />
+					<p:inputText maxlength="10" size="10" id="classe" required="true"
+						value="#{classeCNAEBean.classeCNAE.classe}"
+						converter="upperCaseConverter">
+						<p:ajax event="blur" update="@this" />
+					</p:inputText>
+
+
+					<p:outputLabel value="Denominação" for="denominacao" />
+					<p:inputText maxlength="100" size="100" id="denominacao"
+						required="true" value="#{classeCNAEBean.classeCNAE.denominacao}"
+						converter="upperCaseConverter">
+						<p:ajax event="blur" update="@this" />
+					</p:inputText>
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{classeCNAEBean.salvar()}"
+						update=":msg :formCadastro:painel :formListagem:tabela" />
+					<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,100 @@
+
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<ui:define name="titulo">Graficos</ui:define>
+
+	<ui:define name="corpo">
+		<h:form>
+			<p:tabView>
+				<p:tab title="Multas por eixo">
+					<f:facet name="header">Graficos</f:facet>
+					<p:panelGrid columnClasses="center">
+
+
+						<p:chart type="bar" model="#{relatorioBean.graficoEixos}"
+							style="width:auto" responsive="true" />
+
+					</p:panelGrid>
+				</p:tab>
+				<p:tab title="Multas por Mês">
+					<p:panelGrid columnClasses="center">
+
+						<p:chart type="bar" model="#{relatorioBean.graficoDatas}"
+							style="width:auto" responsive="true" />
+
+					</p:panelGrid>
+				</p:tab>
+				<p:tab title="Multa por Placa ">
+					<p:panelGrid columns="1" columnClasses="left,right" layout="grid">
+						<p:column>
+							<p:chart type="bar" model="#{relatorioBean.graficoPlacas}"
+								style="width:auto" responsive="true" />
+						</p:column>
+
+						<p:column>
+
+						</p:column>
+
+					</p:panelGrid>
+				</p:tab>
+
+				<p:tab title="Tipo de veiculo">
+					<p:panelGrid columnClasses="center">
+
+						<p:chart type="bar" model="#{relatorioBean.graficoTipoVeiculo}" 
+							style="width:auto; heigth:400px;" responsive="true" />
+
+
+					</p:panelGrid>
+				</p:tab>
+				<p:tab title="Placas">
+					<p:panelGrid columns="1" columnClasses="left,right" layout="grid">
+						<f:facet name="header">Placas</f:facet>
+
+						<h:form id="formListagem">
+
+							<p:dataTable id="tabela"
+								emptyMessage="Nenhum registro encontrado." paginator="true"
+								value="#{multasBean.multas}" var="placa" rows="15">
+
+								<p:column headerText="Placa" sortBy="#{placa.placaCavalo}"
+									filterBy="#{placa.placaCavalo}" filterMatchMode="contains">
+									<h:outputText value="#{placa.placaCavalo}" />
+								</p:column>
+
+							</p:dataTable>
+
+
+
+						</h:form>
+
+					</p:panelGrid>
+				</p:tab>
+
+
+				<p:tab title="ANTIGO">
+					<p:panelGrid columns="2" columnClasses="left,right" layout="grid">
+
+						<p:chart type="bar" model="#{relatorioBean.graficoEixos}"
+							style="width:600px;" responsive="true" />
+
+						<p:chart type="bar" model="#{relatorioBean.graficoDatas}"
+							style="width:auto" responsive="true" />
+
+					</p:panelGrid>
+				</p:tab>
+
+
+
+
+
+			</p:tabView>
+		</h:form>
+	</ui:define>
+</ui:composition>

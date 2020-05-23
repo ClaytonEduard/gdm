@@ -1,0 +1,695 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<ui:define name="titulo">Lançamento Veiculos</ui:define>
+
+	<ui:define name="corpo">
+		<!-- 		<p:growl id="msg" /> -->
+		<h:form id="formListagem">
+			<p:panel header="Veiculos - Listagem">
+				<p:dataTable id="tabela" emptyMessage="Nehum registro encontrado"
+					paginator="true" paginatorPosition="bottom" rows="10"
+					style="text-align: center;" scrollable="true" scrollWidth="full"
+					value="#{veiculoBean.veiculos}" var="veiculo">
+					<f:facet name="header">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							actionListener="#{veiculoBean.novo}" update=":msg :formCadastro">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+					</f:facet>
+
+					<p:column headerText="Opções" width="70">
+
+						<p:commandButton icon="fa fa-trash"
+							actionListener="#{veiculoBean.excluir}"
+							update=":msg :formListagem:tabela">
+							<p:confirm header="Confirmação"
+								message="Deseja excluir o veiculo?"
+								icon="fa fa-exclamation-triangle" />
+							<f:attribute name="veiculoSelecionado" value="#{veiculo}" />
+						</p:commandButton>
+
+						<p:commandButton icon="fa fa-pencil" update=":msg :formCadastro"
+							actionListener="#{veiculoBean.editar}"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="veiculoSelecionado" value="#{veiculo}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+
+						</p:commandButton>
+					</p:column>
+
+					<p:column headerText="Foto" width="100">
+						<h:graphicImage cache="false" height="50" width="100"
+							name="#{veiculo.codigo}.png" library="caminhoes" />
+					</p:column>
+					<p:column headerText="Código" width="50">
+						<h:outputText value="#{veiculo.codigo}" />
+					</p:column>
+
+					<p:column headerText="Status" width="100"
+						filterBy="#{veiculo.ativoFormatado}">
+						<h:outputText value="#{veiculo.ativoFormatado}" />
+					</p:column>
+
+					<p:column headerText="Nome Veiculo" width="450">
+						<h:outputText value="#{veiculo.nome}" />
+					</p:column>
+					<p:column headerText="Apelido" width="200">
+						<h:outputText value="#{veiculo.apelido}" />
+					</p:column>
+					<p:column headerText="Codigo Unico " width="100">
+						<h:outputText value="#{veiculo.codigoUnicoVeiculo}" />
+					</p:column>
+
+					<p:column headerText="Capacidade" width="70">
+						<h:outputText value="#{veiculo.capacidade}">
+							<f:convertNumber minFractionDigits="0" integerOnly="true"
+								locale="pt-br" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Cap. Tolerancia PBT" width="70">
+						<h:outputText value="#{veiculo.capacidadePBT}">
+							<f:convertNumber minFractionDigits="0" integerOnly="true"
+								locale="pt-br" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Classe" width="50">
+						<h:outputText value="#{veiculo.classe}" />
+					</p:column>
+
+					<p:column headerText="Codigo Dnit " width="50">
+						<h:outputText value="#{veiculo.codigoDnit}" />
+					</p:column>
+
+					<p:column headerText="Qtd Eixos" width="50">
+						<h:outputText value="#{veiculo.qtdEixos}" />
+					</p:column>
+
+
+					<p:column headerText="G1" width="60">
+						<h:outputText value="#{veiculo.g1}">
+							<f:convertNumber minFractionDigits="0" integerOnly="true"
+								locale="pt-br" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="G1 + PBT" width="60">
+						<h:outputText value="#{veiculo.g1PBT}">
+							<f:convertNumber minFractionDigits="0" integerOnly="true"
+								locale="pt-br" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Tipo Eixo G1" width="140">
+						<h:outputText value="#{veiculo.tipoEixoG1}" />
+					</p:column>
+
+
+					<p:column headerText="G2" width="60">
+						<h:outputText value="#{veiculo.g2}">
+							<f:convertNumber minFractionDigits="0" integerOnly="true"
+								locale="pt-br" />
+						</h:outputText>
+					</p:column>
+
+
+					<p:column headerText="G2 + PBT" width="60">
+						<h:outputText value="#{veiculo.g2PBT}">
+							<f:convertNumber minFractionDigits="0" integerOnly="true"
+								locale="pt-br" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Tipo Eixo G2" width="140">
+						<h:outputText value="#{veiculo.tipoEixoG2}" />
+					</p:column>
+
+
+					<p:column headerText="G3" width="60">
+						<h:outputText value="#{veiculo.g3}">
+							<f:convertNumber minFractionDigits="0" integerOnly="true"
+								locale="pt-br" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="G3 + PBT" width="60">
+						<h:outputText value="#{veiculo.g3PBT}">
+							<f:convertNumber minFractionDigits="0" integerOnly="true"
+								locale="pt-br" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Tipo Eixo G3" width="140">
+						<h:outputText value="#{veiculo.tipoEixoG3}" />
+					</p:column>
+
+
+					<p:column headerText="G4" width="60">
+						<h:outputText value="#{veiculo.g4}">
+							<f:convertNumber minFractionDigits="0" integerOnly="true"
+								locale="pt-br" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="G4 + PBT" width="60">
+						<h:outputText value="#{veiculo.g4PBT}">
+							<f:convertNumber minFractionDigits="0" integerOnly="true"
+								locale="pt-br" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Tipo Eixo G4" width="140">
+						<h:outputText value="#{veiculo.tipoEixoG4}" />
+					</p:column>
+
+					<p:column headerText="G5" width="60">
+						<h:outputText value="#{veiculo.g5}">
+							<f:convertNumber minFractionDigits="0" integerOnly="true"
+								locale="pt-br" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="G5 + PBT" width="60">
+						<h:outputText value="#{veiculo.g5PBT}">
+							<f:convertNumber minFractionDigits="0" integerOnly="true"
+								locale="pt-br" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Tipo Eixo G5" width="140">
+						<h:outputText value="#{veiculo.tipoEixoG5}" />
+					</p:column>
+
+					<p:column headerText="G6" width="60">
+						<h:outputText value="#{veiculo.g6} ">
+							<f:convertNumber minFractionDigits="0" integerOnly="true"
+								locale="pt-br" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="G6 + PBT" width="60">
+						<h:outputText value="#{veiculo.g6PBT}">
+							<f:convertNumber minFractionDigits="0" integerOnly="true"
+								locale="pt-br" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Tipo Eixo G6" width="140">
+						<h:outputText value="#{veiculo.tipoEixoG6}" />
+					</p:column>
+
+					<p:column headerText="G7" width="60">
+						<h:outputText value="#{veiculo.g7}">
+							<f:convertNumber minFractionDigits="0" integerOnly="true"
+								locale="pt-br" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="G7 + PBT" width="60">
+						<h:outputText value="#{veiculo.g7PBT}">
+							<f:convertNumber minFractionDigits="0" integerOnly="true"
+								locale="pt-br" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Tipo Eixo G7" width="140">
+						<h:outputText value="#{veiculo.tipoEixoG7}" />
+					</p:column>
+
+
+
+				</p:dataTable>
+
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="fa fa-close" />
+				</p:confirmDialog>
+			</p:panel>
+		</h:form>
+
+		<!-- Dialogo de cadastro -->
+
+		<p:dialog header="Veiculo - Cadastro" widgetVar="dialogo" width="800"
+			height="600" draggable="true" resizable="false" modal="true"
+			closable="true">
+			<h:form id="formCadastro" enctype="multipart/form-data">
+				<p:tabView>
+					<p:tab title="Dados Veículo" style="text-align:center">
+						<p:panel>
+							<h:panelGrid id="painel" columns="1" cellpadding="1"
+								cellspacing="2">
+								<p:panel>
+									<h:panelGrid columns="4">
+										<p:outputLabel value="Nome: " for="nome" />
+										<p:inputText maxlength="150" id="nome" required="true"
+											value="#{veiculoBean.veiculo.nome}" size="50"
+											converter="upperCaseConverter">
+											<p:ajax event="blur" update="@this" />
+										</p:inputText>
+
+										<p:outputLabel value=" Apelido: " for="apelido" />
+										<p:inputText maxlength="150" id="apelido" required="true"
+											value="#{veiculoBean.veiculo.apelido}" size="30"
+											converter="upperCaseConverter">
+											<p:ajax event="blur" update="@this" />
+										</p:inputText>
+										<p:outputLabel for="status" value="Ativo" />
+
+										<p:selectBooleanCheckbox id="status"
+											value="#{veiculoBean.veiculo.ativo}">
+										</p:selectBooleanCheckbox>
+									</h:panelGrid>
+									<p:panelGrid columns="4">
+
+										<p:outputLabel value="Capacidade PBT" for="capcidadePbt" />
+										<p:inputNumber id="capcidadePbt" decimalPlaces="2"
+											required="true"
+											requiredMessage="O campo 'Capacidade PBT' é obrigatório"
+											value="#{veiculoBean.veiculo.capacidade}">
+											<p:ajax event="change" update="capcidadePbttole"
+												listener="#{veiculoBean.calculaPBT()}" />
+
+										</p:inputNumber>
+
+										<p:outputLabel value="Tolerância PBT" for="toleranciaPbt" />
+										<p:selectOneMenu id="toleranciaPbt" autoWidth="true"
+											filter="true" converter="omnifaces.SelectItemsConverter"
+											requiredMessage="O campo 'Tolerância Pbt' é obrigatório"
+											validatorMessage="O campo 'Tolerância Pbt' é obrigatório"
+											value="#{veiculoBean.veiculo.toleranciaPbt}">
+											<p:ajax event="change" update="capcidadePbttole"
+												listener="#{veiculoBean.calculaPBT()}" />
+											<f:selectItem itemLabel="" noSelectionOption="true" />
+											<f:selectItems value="#{veiculoBean.tolerancias}"
+												var="tolerancia" itemLabel="#{tolerancia.numero} %"
+												itemValue="#{tolerancia.numero}" />
+										</p:selectOneMenu>
+
+										<p:outputLabel value="Capacidade PBT + Tolerância "
+											for="capcidadePbttole" />
+										<p:inputNumber id="capcidadePbttole" decimalPlaces="2"
+											title="Capacidade Mais tolerancia"
+											requiredMessage="O campo 'Capacidade PBT + tolerância' é obrigatório"
+											disabled="true" value="#{veiculoBean.veiculo.capacidadePBT}" />
+
+										<p:outputLabel value="Classe" for="classe" />
+										<p:selectOneMenu id="classe" autoWidth="true" filter="true"
+											required="tre"
+											requiredMessage="O campo 'Classe' é obrigatório"
+											validatorMessage="O campo'Classe' é obrigatório"
+											value="#{veiculoBean.veiculo.classe}">
+											<f:selectItem itemLabel="" noSelectionOption="true" />
+											<f:selectItems value="#{veiculoBean.classes}" var="classe"
+												itemLabel="#{classe}" itemValue="#{classe}" />
+										</p:selectOneMenu>
+
+										<p:outputLabel value="Código Dnit" for="codigoDnit" />
+										<p:inputNumber id="codigoDnit" maxlength="3" decimalPlaces="0"
+											value="#{veiculoBean.veiculo.codigoDnit}" />
+
+										<p:outputLabel value="Quantidade Eixos" for="qtdEixo" />
+										<p:inputNumber id="qtdEixo" required="true" decimalPlaces="0"
+											value="#{veiculoBean.veiculo.qtdEixos}" />
+
+										<p:outputLabel value="Tolerância por Eixos"
+											for="toleranciaPbtEixos" />
+										<p:selectOneMenu id="toleranciaPbtEixos" autoWidth="true"
+											filter="true" required="tre"
+											converter="omnifaces.SelectItemsConverter"
+											requiredMessage="O campo 'Tolerância Pbt por eixos' é obrigatório"
+											validatorMessage="O campo 'Tolerância Pbt por eixos ' é obrigatório"
+											value="#{veiculoBean.veiculo.toleranciaEixo}">
+											<p:ajax event="change" update="painel2"
+												listener="#{veiculoBean.calcularGs()}" />
+											<f:selectItem itemLabel="" noSelectionOption="true" />
+											<f:selectItems value="#{veiculoBean.tolerancias}"
+												var="tolerancia" itemLabel="#{tolerancia.numero} %"
+												itemValue="#{tolerancia.numero}" />
+										</p:selectOneMenu>
+
+										<p:outputLabel for="certificado" value="Requer AET" />
+
+										<p:selectBooleanCheckbox id="certificado"
+											value="#{veiculoBean.veiculo.certificadoAet}">
+										</p:selectBooleanCheckbox>
+
+										<p:outputLabel value="Comprimento Máximo" for="compMaximo" />
+										<p:inputNumber id="compMaximo" maxlength="3" decimalPlaces="0"
+											value="#{veiculoBean.veiculo.comprimentoMaximo}" />
+										<p:outputLabel value="Comprimento Minímo" for="compMinimo" />
+										<p:inputNumber id="compMinimo" maxlength="3" decimalPlaces="0"
+											value="#{veiculoBean.veiculo.comprimentoMinimo}" />
+
+									</p:panelGrid>
+								</p:panel>
+								<p:panel>
+									<p:panelGrid columns="1" layout="grid">
+
+										<p:fileUpload id="upload" mode="advanced"
+											style="text-align:center"
+											fileUploadListener="#{veiculoBean.upload}" update=":msg foto"
+											auto="true" label="Escolher Imagem" uploadLabel="Enviar"
+											cancelLabel="Cancelar"
+											onstart="console.log('Iniciando envio de arquivo')"
+											onerror="console.log('Erro na requisição de envio')"
+											oncomplete="console.log('Envio concluído')" />
+
+
+										<p:lightBox styleClass="imagebox" style="text-align:center">
+											<h:outputLink value="#{imagemBean.foto}">
+												<p:graphicImage id="foto" value="#{imagemBean.foto}"
+													width="200">
+													<f:param name="caminho"
+														value="#{veiculoBean.veiculo.caminho}" />
+												</p:graphicImage>
+											</h:outputLink>
+										</p:lightBox>
+
+									</p:panelGrid>
+								</p:panel>
+
+							</h:panelGrid>
+						</p:panel>
+					</p:tab>
+					<p:tab title="Dados Conjunto">
+						<p:panel>
+							<h:panelGrid id="painel2" columns="1" cellpadding="1">
+
+
+								<h:panelGrid id="painelVeiculo" columns="3">
+									<p:outputLabel value="Cavalo" indicateRequired="true">
+									</p:outputLabel>
+									<p:selectOneMenu required="true"
+										value="#{veiculoBean.veiculo.cavalo}"
+										converter="omnifaces.SelectItemsConverter" filter="true">
+										<f:selectItem noSelectionOption="true" itemValue=""
+											itemLabel="Selecione um veiculo" />
+										<f:selectItems value="#{veiculoBean.cavalos}"
+											var="cursorCavalo" itemValue="#{cursorCavalo}"
+											itemLabel="#{cursorCavalo.descricao}"></f:selectItems>
+										<p:ajax event="change" process="@this" update="painelImagem"
+											listener="#{veiculoBean.imagensConjuntos}"></p:ajax>
+										<p:ajax event="change"
+											listener="#{veiculoBean.carregarImagemCavalo()}"
+											process="@this" update="painelImagem" />
+										<p:ajax event="change" update="@this msg"
+											listener="#{veiculoBean.identificarVeiculo}"></p:ajax>
+									</p:selectOneMenu>
+									<p:spacer width="
+										5" height="5" />
+
+									<p:outputLabel value="Carroceria 1">
+									</p:outputLabel>
+									<p:selectOneMenu value="#{veiculoBean.veiculo.carroceria1}"
+										converter="omnifaces.SelectItemsConverter" filter="true">
+										<f:selectItem noSelectionOption="true" itemValue=""
+											itemLabel="Selecione um veiculo" />
+										<f:selectItems value="#{veiculoBean.carrocerias}"
+											var="cursorCavalo" itemValue="#{cursorCavalo}"
+											itemLabel="#{cursorCavalo.descricao}"></f:selectItems>
+
+										<p:ajax event="change" process="@this" update="painelImagem"
+											listener="#{veiculoBean.imagensConjuntos}"></p:ajax>
+										<p:ajax event="change"
+											listener="#{veiculoBean.carregarImagemCarroceria1()}"
+											process="@this" update="painelImagem" />
+										<p:ajax event="change" update="@this msg"
+											listener="#{veiculoBean.identificarVeiculo}"></p:ajax>
+
+									</p:selectOneMenu>
+									<p:spacer width="5" height="5" />
+
+									<p:outputLabel value="Carroceria 2">
+									</p:outputLabel>
+									<p:selectOneMenu value="#{veiculoBean.veiculo.carroceria2}"
+										converter="omnifaces.SelectItemsConverter" filter="true">
+										<f:selectItem noSelectionOption="true" itemValue=""
+											itemLabel="Selecione um veiculo" />
+										<f:selectItems value="#{veiculoBean.carrocerias}"
+											var="cursorCavalo" itemValue="#{cursorCavalo}"
+											itemLabel="#{cursorCavalo.descricao}"></f:selectItems>
+
+										<p:ajax event="change" process="@this" update="painelImagem"
+											listener="#{veiculoBean.imagensConjuntos}"></p:ajax>
+										<p:ajax event="change"
+											listener="#{veiculoBean.carregarImagemCarroceria2()}"
+											process="@this" update="painelImagem" />
+										<p:ajax event="change" update="@this msg"
+											listener="#{veiculoBean.identificarVeiculo}"></p:ajax>
+
+									</p:selectOneMenu>
+									<p:spacer width="5" height="5" />
+
+									<p:outputLabel value="Carroceria 3">
+									</p:outputLabel>
+									<p:selectOneMenu value="#{veiculoBean.veiculo.carroceria3}"
+										converter="omnifaces.SelectItemsConverter" filter="true">
+										<f:selectItem noSelectionOption="true" itemValue=""
+											itemLabel="Selecione um veiculo" />
+										<f:selectItems value="#{veiculoBean.carrocerias}"
+											var="cursorCavalo" itemValue="#{cursorCavalo}"
+											itemLabel="#{cursorCavalo.descricao}"></f:selectItems>
+
+										<p:ajax event="change" process="@this" update="painelImagem"
+											listener="#{veiculoBean.imagensConjuntos}"></p:ajax>
+										<p:ajax event="change"
+											listener="#{veiculoBean.carregarImagemCarroceria3()}"
+											process="@this" update="painelImagem" />
+										<p:ajax event="change" update="@this msg"
+											listener="#{veiculoBean.identificarVeiculo}"></p:ajax>
+
+									</p:selectOneMenu>
+								</h:panelGrid>
+
+
+
+								<p:panelGrid id="painelImagem" columns="4" layout="grid"
+									style="margin-top:2px">
+
+
+									<h:column width="100">
+										<p:galleria value="#{veiculoBean.imagemCavalo}" var="image"
+											style="background:#FFFFFF; align:center;" panelHeight="90"
+											panelWidth="127" showFilmstrip="false">
+											<p:graphicImage cache="false"
+												name="#{image}" library="carrocerias"
+												styleClass="img" height="89" width="126"
+												style="align:center; margin-top:1px; margin-left:1px; margin-bottom:1px">
+											</p:graphicImage>
+										</p:galleria>
+									</h:column>
+
+
+									<h:column width="100">
+										<p:galleria value="#{veiculoBean.imagemCarroceria1}"
+											var="image" style="background:#FFFFFF; align:center;"
+											panelHeight="90" panelWidth="127" showFilmstrip="false">
+											<p:graphicImage cache="false"
+												name="#{image}" library="carrocerias"
+												styleClass="img" height="89" width="126"
+												style="align:center; margin-top:1px; margin-left:1px; margin-bottom:1px">
+											</p:graphicImage>
+										</p:galleria>
+									</h:column>
+									<h:column width="100">
+										<p:galleria value="#{veiculoBean.imagemCarroceria2}"
+											var="image" style="background:#FFFFFF; align:center;"
+											panelHeight="90" panelWidth="127" showFilmstrip="false">
+											<p:graphicImage cache="false"
+												name="#{image}" library="carrocerias"
+												styleClass="img" height="89" width="126"
+												style="align:center; margin-top:1px; margin-left:1px; margin-bottom:1px"></p:graphicImage>
+										</p:galleria>
+									</h:column>
+									<h:column width="100">
+										<p:galleria value="#{veiculoBean.imagemCarroceria3}"
+											var="image" style="background:#FFFFFF; align:center;"
+											panelHeight="90" panelWidth="127" showFilmstrip="false">
+											<p:graphicImage cache="false"
+												name="#{image}" library="carrocerias"
+												styleClass="img" height="89" width="126"
+												style="align:center; margin-top:1px; margin-left:1px; margin-bottom:1px"></p:graphicImage>
+										</p:galleria>
+									</h:column>
+								</p:panelGrid>
+
+								<h:panelGrid columns="6">
+									<p:outputLabel value="Peso G1" for="pesoG1" />
+									<p:inputNumber id="pesoG1" decimalPlaces="0"
+										value="#{veiculoBean.veiculo.g1}">
+
+										<p:ajax event="keyup" update="g1aux"
+											listener="#{veiculoBean.calculaG1()}" />
+									</p:inputNumber>
+
+									<p:outputLabel value="Peso g1 + Tolerância" />
+									<p:inputNumber id="g1aux" decimalPlaces="0"
+										value="#{veiculoBean.veiculo.g1PBT}" disabled="true" />
+
+									<p:outputLabel value="Tipo Eixo" for="tipoEixoG1" />
+									<p:selectOneMenu id="tipoEixoG1" filter="true" required="tre"
+										converter="omnifaces.SelectItemsConverter"
+										requiredMessage="O campo 'Tipo Eixo' é obrigatório"
+										value="#{veiculoBean.veiculo.tipoEixoG1}">
+										<f:selectItem noSelectionOption="true" itemLabel="Selecione" />
+										<f:selectItems value="#{veiculoBean.tipoEixos}" var="tipoEixo"
+											itemLabel="#{tipoEixo}" itemValue="#{tipoEixo}" />
+									</p:selectOneMenu>
+
+
+									<p:outputLabel value="Peso G2" for="pesoG2" />
+									<p:inputNumber id="pesoG2" decimalPlaces="0"
+										value="#{veiculoBean.veiculo.g2}">
+
+										<p:ajax event="keyup" update="g2aux"
+											listener="#{veiculoBean.calculaG2()}" />
+									</p:inputNumber>
+
+									<p:outputLabel value="Peso g2 + Tolerância" />
+									<p:inputNumber id="g2aux" decimalPlaces="0"
+										value="#{veiculoBean.veiculo.g2PBT}" disabled="true" />
+
+									<p:outputLabel value="Tipo Eixo" for="tipoEixo2" />
+									<p:selectOneMenu id="tipoEixo2" filter="true"
+										value="#{veiculoBean.veiculo.tipoEixoG2}"
+										converter="omnifaces.SelectItemsConverter">
+										<f:selectItem itemLabel="" noSelectionOption="true" />
+										<f:selectItems value="#{veiculoBean.tipoEixos}"
+											var="tipoEixoG2" itemLabel="#{tipoEixoG2}"
+											itemValue="#{tipoEixoG2}" />
+									</p:selectOneMenu>
+
+									<p:outputLabel value="Peso G3" for="pesoG3" />
+									<p:inputNumber id="pesoG3" value="#{veiculoBean.veiculo.g3}"
+										decimalPlaces="0">
+										<p:ajax event="keyup" update="g3aux"
+											listener="#{veiculoBean.calculaG3()}" />
+									</p:inputNumber>
+
+									<p:outputLabel value="Peso g3 + Tolerância" />
+									<p:inputNumber id="g3aux" decimalPlaces="0"
+										value="#{veiculoBean.veiculo.g3PBT}" disabled="true" />
+
+									<p:outputLabel value="Tipo Eixo" for="tipoEixo3" />
+									<p:selectOneMenu id="tipoEixo3" autoWidth="true" filter="true"
+										value="#{veiculoBean.veiculo.tipoEixoG3}"
+										converter="omnifaces.SelectItemsConverter">
+										<f:selectItem itemLabel="" noSelectionOption="true" />
+										<f:selectItems value="#{veiculoBean.tipoEixos}"
+											var="tipoEixoG3" itemLabel="#{tipoEixoG3}"
+											itemValue="#{tipoEixoG3}" />
+									</p:selectOneMenu>
+
+									<p:outputLabel value="Peso G4" for="pesoG4" />
+									<p:inputNumber id="pesoG4" value="#{veiculoBean.veiculo.g4}"
+										decimalPlaces="0">
+										<p:ajax event="keyup" update="g4aux"
+											listener="#{veiculoBean.calculaG4()}" />
+									</p:inputNumber>
+
+									<p:outputLabel value="Peso g4 + Tolerância" />
+									<p:inputNumber id="g4aux" decimalPlaces="0"
+										value="#{veiculoBean.veiculo.g4PBT}" disabled="true" />
+
+									<p:outputLabel value="Tipo Eixo" for="tipoEixo4" />
+									<p:selectOneMenu id="tipoEixo4" autoWidth="true" filter="true"
+										value="#{veiculoBean.veiculo.tipoEixoG4}">
+										<f:selectItem itemLabel="" noSelectionOption="true" />
+										<f:selectItems value="#{veiculoBean.tipoEixos}"
+											var="tipoEixoG4" itemLabel="#{tipoEixoG4}"
+											itemValue="#{tipoEixoG4}" />
+									</p:selectOneMenu>
+
+									<p:outputLabel value="Peso G5" for="pesoG5" />
+									<p:inputNumber id="pesoG5" value="#{veiculoBean.veiculo.g5}"
+										decimalPlaces="0">
+										<p:ajax event="keyup" update="g5aux"
+											listener="#{veiculoBean.calculaG5()}" />
+									</p:inputNumber>
+
+									<p:outputLabel value="Peso g5 + Tolerância" />
+									<p:inputNumber decimalPlaces="0" id="g5aux"
+										value="#{veiculoBean.veiculo.g5PBT}" disabled="true" />
+
+									<p:outputLabel value="Tipo Eixo" for="tipoEixo5" />
+									<p:selectOneMenu id="tipoEixo5" autoWidth="true" filter="true"
+										value="#{veiculoBean.veiculo.tipoEixoG5}">
+										<f:selectItem itemLabel="" noSelectionOption="true" />
+										<f:selectItems value="#{veiculoBean.tipoEixos}"
+											var="tipoEixoG5" itemLabel="#{tipoEixoG5}"
+											itemValue="#{tipoEixoG5}" />
+									</p:selectOneMenu>
+
+									<p:outputLabel value="Peso G6" for="pesoG6" />
+									<p:inputNumber id="pesoG6" value="#{veiculoBean.veiculo.g6}"
+										decimalPlaces="0">
+										<p:ajax event="keyup" update="g6aux"
+											listener="#{veiculoBean.calculaG6()}" />
+									</p:inputNumber>
+
+									<p:outputLabel value="Peso g6 + Tolerância" />
+									<p:inputNumber decimalPlaces="0" id="g6aux"
+										value="#{veiculoBean.veiculo.g6PBT}" disabled="true" />
+
+									<p:outputLabel value="Tipo Eixo" for="tipoEixo6" />
+									<p:selectOneMenu id="tipoEixo6" autoWidth="true" filter="true"
+										value="#{veiculoBean.veiculo.tipoEixoG6}">
+										<f:selectItem itemLabel="" noSelectionOption="true" />
+										<f:selectItems value="#{veiculoBean.tipoEixos}"
+											var="tipoEixoG6" itemLabel="#{tipoEixoG6}"
+											itemValue="#{tipoEixoG6}" />
+									</p:selectOneMenu>
+
+
+									<p:outputLabel value="Peso G7" for="pesoG7" />
+									<p:inputNumber id="pesoG7" value="#{veiculoBean.veiculo.g7}"
+										decimalPlaces="0">
+										<p:ajax event="keyup" update="g7aux"
+											listener="#{veiculoBean.calculaG7()}" />
+									</p:inputNumber>
+
+									<p:outputLabel value="Peso g7 + Tolerância" />
+									<p:inputNumber decimalPlaces="0" id="g7aux"
+										value="#{veiculoBean.veiculo.g7PBT}" disabled="true" />
+
+									<p:outputLabel value="Tipo Eixo" for="tipoEixo7" />
+									<p:selectOneMenu id="tipoEixo7" autoWidth="true" filter="true"
+										value="#{veiculoBean.veiculo.tipoEixoG7}">
+										<f:selectItem itemLabel="" noSelectionOption="true" />
+										<f:selectItems value="#{veiculoBean.tipoEixos}"
+											var="tipoEixoG7" itemLabel="#{tipoEixoG7}"
+											itemValue="#{tipoEixoG7}" />
+									</p:selectOneMenu>
+								</h:panelGrid>
+							</h:panelGrid>
+						</p:panel>
+
+						<h:panelGrid columns="2">
+							<p:commandButton value="Salvar"
+								actionListener="#{veiculoBean.salvar()}"
+								update=":msg :formCadastro :formListagem:tabela" />
+
+
+						</h:panelGrid>
+					</p:tab>
+
+				</p:tabView>
+
+			</h:form>
+		</p:dialog>
+
+
+
+	</ui:define>
+</ui:composition>

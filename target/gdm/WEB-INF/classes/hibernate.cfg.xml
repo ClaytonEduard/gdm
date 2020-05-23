@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+		"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+		"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+    
+    <!-- Configurações de Conexão com o Banco de Dados -->
+<!-- 		<property name="connection.driver_class">com.mysql.jdbc.Driver</property> -->
+<!-- 		<property name="connection.url">jdbc:mysql://mysql.galcond.com:3306/galcond</property> -->
+<!-- 		<property name="connection.username">galcond</property> -->
+<!-- 		<property name="connection.password">painel2019</property> -->
+
+		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="connection.url">jdbc:mysql://127.0.0.1:3306/galcond</property>
+		
+		<property name="connection.username">root</property>
+		<property name="connection.password">admin</property>
+
+		<!-- conexao para acessar o server do JOAO -->
+
+		<!-- <property name="connection.password">35715908</property> -->
+
+
+		<!-- Pool de Conexões -->
+		<!-- <property name="connection.pool_size">1</property> -->
+
+		<property name="hibernate.c3p0.min_size">5</property>
+		<property name="hibernate.c3p0.max_size">500</property>
+		<property name="hibernate.c3p0.acquire_increment">5</property>
+
+		<property name="hibernate.c3p0.timeout">3600</property>
+		<property name="hibernate.c3p0.max_statements">50</property>
+		<property name="hibernate.c3p0.idle_test_period">1800</property>
+
+
+		<property name="hibernate.temp.use_jdbc_metadata_defaults">false</property>
+
+		<!-- SQL dialect -->
+		<property name="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
+
+		<!-- Gerenciamento do Contexto das Sessões -->
+		<property name="current_session_context_class">thread</property>
+
+		<!-- Cache de Segundo Nível -->
+		<property name="cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property>
+
+		<!-- Mostra as SQLs Geradas -->
+		<property name="show_sql">true</property>
+
+		<!-- Cria as tabelas do banco de dados -->
+		<property name="hbm2ddl.auto">update</property>
+
+		<mapping class="com.gdm.domain.Cidade" />
+		<mapping class="com.gdm.domain.Estado" />
+		<mapping class="com.gdm.domain.Orgao" />
+		<mapping class="com.gdm.domain.Produto" />
+		<mapping class="com.gdm.domain.Pessoa" />
+		<mapping class="com.gdm.domain.Empresa" />
+		<mapping class="com.gdm.domain.ClasseCNAE" />
+		<mapping class="com.gdm.domain.Usuario" />
+		<mapping class="com.gdm.domain.FuncaoServico" />
+		<mapping class="com.gdm.domain.CategoriaProduto" />
+		<mapping class="com.gdm.domain.Veiculo" />
+		<mapping class="com.gdm.domain.Tolerancia" />
+		<mapping class="com.gdm.domain.Multa" />
+		<mapping class="com.gdm.domain.GrupoCNAE" />
+		<mapping class="com.gdm.domain.TipoConjunto" />
+		<mapping class="com.gdm.domain.CavaloCarroceria" />
+		<mapping class="com.gdm.domain.Vistoria" />
+		<mapping class="com.gdm.domain.Transportadora" />
+		<mapping class="com.gdm.domain.PermissaoModulo" />
+	</session-factory>
+</hibernate-configuration>

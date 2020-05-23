@@ -1,0 +1,66 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<style type="text/css">
+.ui-g div {
+	background-color: #gray !important;
+	text-align: center;
+	border: 1px solid #fafafa;
+}
+</style>
+
+	<ui:define name="titulo">Home</ui:define>
+	<p:growl id="msg" />
+	<ui:define name="corpo">
+		<p:panelGrid>
+			<div class="ui-g-10 ui-g-nopad">
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-6 ui-lg-3">
+						<p:link outcome="/pages/multas/multa.xhtml"
+							rendered="#{autenticacaoBean.permissaoModulo(['GDM'])}">
+							<p:panel>
+								<p:graphicImage library="images" name="MULTAS_MENU.png"
+									width="100%" height="100%" />
+							</p:panel>
+						</p:link>
+					</div>
+
+					<div class="ui-g-12 ui-md-6 ui-lg-3">
+						<p:link outcome="/pages/relatorio/graficos.xhtml"
+							rendered="#{autenticacaoBean.permissaoModulo(['GDM'])}">
+							<p:panel>
+								<p:graphicImage library="images" name="INDICADORES_MENU.png"
+									width="100%" height="100%" />
+							</p:panel>
+						</p:link>
+
+					</div>
+					<div class="ui-g-12 ui-md-6 ui-lg-3">
+						<p:link outcome="/pages/cadastro/vistoria.xhtml"
+							rendered="#{autenticacaoBean.permissaoModulo(['VISTORIA'])}">
+							<p:panel>
+								<p:graphicImage library="images" name="VISTORIA_MENU.png"
+									width="100%" height="100%" />
+							</p:panel>
+						</p:link>
+
+					</div>
+					<div class="ui-g-12 ui-md-6 ui-lg-3">
+						<p:link
+							rendered="#{autenticacaoBean.permissaoModulo(['FINANCEIRO'])}">
+							<p:panel>
+								<p:graphicImage library="images" name="FINANCEIRO_MENU.png"
+									width="100%" height="100%" />
+							</p:panel>
+						</p:link>
+					</div>
+				</div>
+			</div>
+		</p:panelGrid>
+	</ui:define>
+
+</ui:composition>

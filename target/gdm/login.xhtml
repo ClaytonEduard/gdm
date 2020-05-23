@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Login</title>
+	<h:outputStylesheet library="css" name="/sistema.css" />
+
+	<style>
+.Bimage {
+	background-image: url("resources/images/Background_png.jpg");
+	background-repeat: no-repeat;
+	background-size: cover;
+	height: 100%;
+}
+</style>
+
+</h:head>
+<h:body styleClass="Bimage">
+	<p:growl id="msg" />
+	<!--     div para centralizar a tela -->
+	<div id="login-dialog" >
+		<p:dialog closable="false" draggable="false" resizable="false" id="login" 
+			modal="false" visible="true" >
+			<h:panelGrid columns="1" styleClass="grid-login2" layout="grid"
+				style="text-align:left; margin-top:0px !important;" >
+				<f:facet name="header" >
+					
+						<p:graphicImage id="logo_login" library="images"
+							name="logo_250x50.png"
+							style="margin-left:75px; margin-right:0; width: 100px" />
+				
+				</f:facet>
+			</h:panelGrid>
+
+			<h:form id="frm">
+				<p:panelGrid columns="1" styleClass="grid-login" layout="grid"
+					style="text-align:left">
+
+					<p:outputLabel for="cpf" value="CPF" />
+					<p:inputMask id="cpf" mask="999.999.999-99" 
+						required="true" requiredMessage="Campo CPF é obrigatório!!"
+						value="#{autenticacaoBean.usuario.pessoa.cpf}" />
+
+					<p:outputLabel value="Senha" for="senha" />
+					<p:password id="senha"  maxlength="8" required="true"
+						requiredMessage="Campo Senha é obrigatório!!"
+						value="#{autenticacaoBean.usuario.senha}" />
+
+					<h:panelGroup />
+					<p:commandButton value="Entrar" update=":msg"
+						style="width:100%; text-align:center"
+						actionListener="#{autenticacaoBean.autenticar()}" />
+
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+	</div>
+</h:body>
+</html>

@@ -1,0 +1,207 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Conjuntos</ui:define>
+
+	<!-- Esse é o id da mensagem salvar exibida quando salva algum novo cadastro -->
+	<!-- 	<p:growl id="msg"> -->
+	<!-- 	</p:growl> -->
+	<ui:define name="corpo">
+
+		<!-- Aqui inicia o formulário com os valores já cadastrados com um id-->
+		<h:form id="formularioListagem">
+			<!-- Este é o cabeçalho do formulario -->
+
+			<p:panel header="Conjuntos - Listagem ">
+				<!-- Caso não contenha nenhum valor é exibido a mensagem abaixo "Nenhum registro encontrado-->
+				<!-- O paginador é responsavel por definir uma quantidade x de valores por pagina, os valores são carregados -->
+				<!-- da classe EstadoBean e o var recebe as propriedades da classe bean, por fim o rows quantifica quantos valores serão atribuidos por pagina-->
+
+
+
+				<p:dataTable id="tabelaConjuntos"
+					emptyMessage="Nenhum registro encontrado" paginator="true"
+					value="#{cavaloCarroceriaBean.cavaloCarrocerias}"
+					style="text-align:center" var="cursorConjuntos" rows="10">
+
+					<!-- O comando abaixo define o rodapé da nossa pagina -->
+					<f:facet name="header">
+
+						<!-- Dentro do rodapé está o botão novo, responsavel por criar um novo valor que é definido na classe estadoBean -->
+						<!-- O botão tem a propriedade de oncomplete isso quer dizer que ao terminar de ser pressionado ele retornará com uma ação -->
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							actionListener="#{cavaloCarroceriaBean.novo}"
+							update=":msg :formularioCadastro:painelCampos">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</f:facet>
+
+					<!-- Aqui inicia as pripriedades internas do popup que ira emitir uma mensagem de confirmação -->
+					<!-- Vamos inserir o comando que irá chamar a classe estadoBean / excluir que funcionara apenas quando o usuario clicar em sim-->
+					<p:column headerText="Opções" width="100">
+
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{cavaloCarroceriaBean.excluir}"
+							update=":msg :formularioListagem:tabelaConjuntos">
+							<p:confirm header="Confirmação"
+								message="Deseja excluir o conjunto?" icon="ui-icon-alert"></p:confirm>
+							<f:attribute name="conjuntoSelecionado"
+								value="#{cursorConjuntos}"></f:attribute>
+						</p:commandButton>
+
+						<!-- Botão editar -->
+						<p:commandButton icon="ui-icon-pencil"
+							actionListener="#{cavaloCarroceriaBean.editar}"
+							update=":formularioCadastro:painelCampos"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="conjuntoSelecionado"
+								value="#{cursorConjuntos}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+					</p:column>
+
+
+
+					<!-- Aqui inicia o cabeçalho interno do formulario que ira exibir os dados está incluso Classificação = Sort e Filtro = Filter -->
+					<p:column width="120" headerText="Tipo"
+						sortBy="#{cursorConjuntos.tipoConjunto.tipoConjunto}"
+						filterBy="#{cursorConjuntos.tipoConjunto.tipoConjunto}">
+
+						<!-- O outputtext é responsavel por puxar um texto de saida: O valor está pegando da variavel objeto cursor estado definida no inicio -->
+						<!-- Esse cursor estado é uma variavel secundario que obtem o valor de estadoBean -->
+						<h:outputText value="#{cursorConjuntos.tipoConjunto.tipoConjunto}" />
+					</p:column>
+
+					<p:column headerText="Foto" width="100">
+						<p:graphicImage cache="false" height="50" width="100"
+							name="#{cursorConjuntos.codigo}.png"  library="carrocerias"/>
+
+					</p:column>
+
+					<p:column exportFunction="true" width="400" headerText="Descrição"
+						sortBy="#{cursorConjuntos.descricao}"
+						filterBy="#{cursorConjuntos.descricao}">
+						<h:outputText value="#{cursorConjuntos.descricao}" />
+					</p:column>
+
+					<p:column headerText="Capacidade"
+						sortBy="#{cursorConjuntos.capacidade}"
+						filterBy="#{cursorConjuntos.capacidade}">
+						<h:outputText value="#{cursorConjuntos.capacidade}" />
+					</p:column>
+
+					<p:column headerText="Quantidade eixos"
+						sortBy="#{cursorConjuntos.quantidadeEixos}"
+						filterBy="#{cursorConjuntos.quantidadeEixos}">
+						<h:outputText value="#{cursorConjuntos.quantidadeEixos}" />
+					</p:column>
+
+
+
+				</p:dataTable>
+
+				<!-- Aqui vamos capturar as informações da linha que desejamos excluir  -->
+				<!-- O atributo name = pode ser qualquer texto que desejar e o value vamos definir o cursor que possui o valor -->
+
+				<!-- Aqui inicia a contrução do PopUp de confirmação. O mesmo deve ficar fora da tabela da pagina principal, assim estara disponivel a todas opçoes -->
+				<p:confirmDialog global="True">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check"></p:commandButton>
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close"></p:commandButton>
+				</p:confirmDialog>
+
+			</p:panel>
+		</h:form>
+
+
+		<!-- Aqui inicia o popup de cadastro de um novo estado. Primeiro vem o titulo, depois o tipo de tela "dialog" é popup -->
+		<!-- draggable = false - nao arrastavel / resizable = false - nao redimensionavel / Closable = false - nao fechar no X -->
+		<!-- Modal = true - ele bloqueia a interatividade com a tela do fundo -->
+		<p:dialog header="Conjunto - Cadastro" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true" closable="false">
+
+			<!-- Aqui estou iniciando o formulario e dando um ID para ele, assim quando formos usar o UPDATE referenciamos o ID -->
+
+			<!-- Aqui vamos iniciar um painel e dar um id para ele, definindo 2 colunas para organizar titulo e campo de preenchimento -->
+			<!-- Acima o titulo do campo 1 -->
+			<!-- Aqui vamos definir o tipo de campo inputtext aceitando ate 50 carateres e com tamanho 15 -->
+			<!--Acima definimos o valor referenciando a classe estadoBean que contem a variavel estado e faz comunicação com o banco  -->
+
+
+			<h:form id="formularioCadastro" enctype="multipart/form-data">
+				<h:panelGrid id="painelCampos" columns="2">
+
+					<p:outputLabel for="tipoX" value="Tipo:" />
+					<p:selectOneMenu id="tipoX"
+						value="#{cavaloCarroceriaBean.cavaloCarroceria.tipoConjunto}"
+						converter="omnifaces.SelectItemsConverter" required="true"
+						requiredMessage="Tipo é um campo obrigatório">
+						<f:selectItem noSelectionOption="true" itemValue=""
+							itemLabel="Selecione um tipo">
+						</f:selectItem>
+						<f:selectItems value="#{cavaloCarroceriaBean.tipoConjuntos}"
+							var="cursorTipos" itemValue="#{cursorConjuntos}"
+							itemLabel="#{cursorTipos.tipoConjunto}"></f:selectItems>
+					</p:selectOneMenu>
+
+
+
+					<p:outputLabel value="Descrição:" for="descriacaoid">
+					</p:outputLabel>
+					<p:inputText id="descriacaoid" maxlength="100" size="20"
+						value="#{cavaloCarroceriaBean.cavaloCarroceria.descricao}"
+						required="true" requiredMessage="Descrição é campo obrigatório"
+						converter="upperCaseConverter">
+						<p:ajax event="blur" update="@this" />
+					</p:inputText>
+
+					<p:outputLabel value="Capacidade:" for="capac">
+					</p:outputLabel>
+					<p:inputMask mask="99999" type="Number" maxlength="8" size="20"
+						value="#{cavaloCarroceriaBean.cavaloCarroceria.capacidade}"
+						id="capac" required="true"
+						requiredMessage="Capacidade é campo obrigatório">
+					</p:inputMask>
+
+
+					<p:outputLabel value="Quantidade eixos:">
+					</p:outputLabel>
+					<p:spinner maxlength="1" size="18"
+						value="#{cavaloCarroceriaBean.cavaloCarroceria.quantidadeEixos}">
+					</p:spinner>
+					<p:spacer width="10" height="10" />
+				</h:panelGrid>
+
+				<p:spacer width="10" height="10" />
+				<p:fileUpload id="foto" mode="advanced" auto="true"
+					fileUploadListener="#{cavaloCarroceriaBean.SubirImagem}"
+					label="Selecionar imagem" update="msg"></p:fileUpload>
+
+
+				<!-- Aqui iniciamos um novo painel grid para organizar os botoes salvar e fechar do popup "novo" -->
+				<!-- Definimos o texto interno no botão Salvar, em seguida definimos uma ação salvar da classe estadoBean -->
+
+				<h:panelGrid columns="3">
+					<p:commandButton value="Salvar"
+						actionListener="#{cavaloCarroceriaBean.salvar()}"
+						update=":msg :formularioCadastro:painelCampos :formularioListagem:tabelaConjuntos">
+					</p:commandButton>
+					<!-- Apos salvar chamamos um update para mostrar a mensagem que definimos no estadoBean e atualizar o formulario limpando os codigos -->
+					<!-- Aqui inicia o botao fechar no popup novo cadastro -->
+					<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();">
+					</p:commandButton>
+				</h:panelGrid>
+
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

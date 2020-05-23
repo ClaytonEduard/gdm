@@ -1,0 +1,125 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<ui:define name="titulo">Lançamento Multas</ui:define>
+
+	<ui:define name="corpo">
+		<!-- 		<p:growl id="msg" /> -->
+		<h:form id="formListagem">
+			<p:panel header="Produto - Listagem">
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					paginator="true" value="#{produtoBean.produtos}" var="produto"
+					style="text-align: center;" rows="10" paginatorPosition="bottom">
+
+					<f:facet name="header">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							actionListener="#{produtoBean.novo()}"
+							update=":msg :formCadastro:painel">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</f:facet>
+					<p:column headerText="Opções" width="100">
+
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{produtoBean.excluir}"
+							update=":msg :formListagem:tabela">
+							<p:confirm header="Confirmação"
+								message="Deseja excluir o produto
+							?"
+								icon="ui-icon-alert" />
+							<f:attribute name="produtoSelecionado" value="#{produto}" />
+						</p:commandButton>
+
+
+						<p:commandButton icon="ui-icon-pencil"
+							update=":msg :formCadastro:painel"
+							actionListener="#{produtoBean.editar}"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="produtoSelecionado" value="#{produto}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</p:column>
+					<p:column headerText="Nome" sortBy="#{produto.nome}"
+						filterBy="#{produto.nome}">
+						<h:outputText value="#{produto.nome}" />
+					</p:column>
+
+					<p:column headerText="Unidade Medida"
+						sortBy="#{produto.unidadeMedida}"
+						filterBy="#{produto.unidadeMedida}">
+						<h:outputText value="#{produto.unidadeMedida}" />
+					</p:column>
+
+					<p:column headerText="Categoria"
+						sortBy="#{produto.categoriaProduto.descricao}"
+						filterBy="#{produto.categoriaProduto.descricao}">
+						<h:outputText value="#{produto.categoriaProduto.descricao}" />
+					</p:column>
+
+				</p:dataTable>
+
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Produto - Cadastro" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true" closable="false">
+			<h:form id="formCadastro">
+				<h:panelGrid id="painel" columns="2">
+					<p:outputLabel value="Nome" for="nome" />
+					<p:inputText maxlength="50" size="30" id="nome" required="true"
+						value="#{produtoBean.produto.nome}" converter="upperCaseConverter">
+						<p:ajax event="blur" update="@this" />
+					</p:inputText>
+
+					<p:outputLabel value="Unidade Medida" for="unidade" />
+					<p:selectOneMenu filter="true" id="unidade" required="true"
+						requiredMessage="Campo Unidade Medidia é obrigatório!"
+						value="#{produtoBean.produto.unidadeMedida}">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione uma unidade medida!" />
+						<f:selectItem itemLabel="TOM" itemValue="tom" />
+						<f:selectItem itemLabel="KG" itemValue="kg" />
+						<f:selectItem itemLabel="CDA" itemValue="cda" />
+						<f:selectItem itemLabel="LTs" itemValue="lts" />
+
+					</p:selectOneMenu>
+					<p:outputLabel value="Categoria" for="categoria" />
+					<p:selectOneMenu filter="true" id="categoria" required="true"
+						requiredMessage="Campo categoria é obrigatório!"
+						value="#{produtoBean.produto.categoriaProduto}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione uma Categoria" />
+						<f:selectItems value="#{produtoBean.categoriaProdutos}"
+							var="categoria" itemValue="#{categoria}"
+							itemLabel="#{categoria.descricao}" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="fa fa-save"
+						actionListener="#{produtoBean.salvar()}"
+						update=":msg :formCadastro:painel :formListagem:tabela" />
+					<p:commandButton value="Fechar" icon="fa fa-close"
+						oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+
+	</ui:define>
+</ui:composition>

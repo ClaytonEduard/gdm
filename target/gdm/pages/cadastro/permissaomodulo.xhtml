@@ -1,0 +1,120 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<ui:define name="titulo">Cadastro Modulo</ui:define>
+
+	<ui:define name="corpo">
+		<!-- 		<p:growl id="msg" /> -->
+		<h:form id="formListagem">
+			<p:panel header="Cadastro Permissão Módulo - Listagem">
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					paginator="true" rows="10" paginatorPosition="bottom"
+					value="#{permissaoModuloBean.permissaoModulos}"
+					style="text-align: center;" var="permissaoModulo">
+
+					<f:facet name="header">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							actionListener="#{permissaoModuloBean.novo()}"
+							update=":formCadastro:painel"
+							rendered="#{autenticacaoBean.temPermissoes(['Administrador','Gerente','Programador'])}">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</f:facet>
+
+					<p:column headerText="Opções" width="100">
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{permissaoModuloBean.excluir}"
+							update=":msg :formListagem:tabela"
+							>
+							<p:confirm header="Confirmação"
+								message="Deseja excluir esta permissão?" icon="ui-icon-alert" />
+							<f:attribute name="permissaoModuloSelecionado"
+								value="#{permissaoModulo}" />
+
+						</p:commandButton>
+
+
+						<p:commandButton icon="ui-icon-pencil" update=":formCadastro"
+							actionListener="#{permissaoModuloBean.editar}"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="permissaoModuloSelecionado"
+								value="#{permissaoModulo}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</p:column>
+
+					<p:column headerText="Descrição Modulo"
+						sortBy="#{permissaoModulo.modulodescricao.toString()}"
+						filterBy="#{permissaoModulo.modulodescricao.toString()}">
+						<h:outputText
+							value="#{permissaoModulo.modulodescricao.toString()}" />
+					</p:column>
+
+
+					<p:column headerText="Empresa"
+						sortBy="#{permissaoModulo.empresa.razaoSocial}"
+						filterBy="#{permissaoModulo.empresa.razaoSocial}">
+						<h:outputText value="#{permissaoModulo.empresa.razaoSocial}" />
+					</p:column>
+
+				</p:dataTable>
+				<!-- Efeitos para saida de tela sao = blind, bounce, clip, drop, explode, fold, highlight, puff, pulsate,
+scale, shake, size and slide. -->
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+		</h:form>
+
+
+		<p:dialog header="Permissão Modulo - Cadastro" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true" closable="false">
+			<h:form id="formCadastro">
+				<h:panelGrid id="painel" columns="2">
+
+					<p:outputLabel value="Módulo:" for="modulo" />
+					<p:selectOneRadio id="modulo" columns="3" required="true"
+						value="#{permissaoModuloBean.permissaoModulo.modulodescricao}"
+						requiredMessage="O modulos tipo é Obrigatório">
+						<f:selectItem itemValue="GDM" itemLabel="Gdm" />
+						<f:selectItem itemValue="VISTORIA" itemLabel="Vistoria" />
+						<f:selectItem itemValue="INDICADORES" itemLabel="Indicadores" />
+						<f:selectItem itemValue="FINANCEIRO" itemLabel="Financeiro" />
+
+					</p:selectOneRadio>
+
+					<p:outputLabel value="Empresa" for="empresa" />
+					<p:selectOneMenu filter="true" id="empresa" required="true"
+						value="#{permissaoModuloBean.permissaoModulo.empresa}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione uma empresa" />
+						<f:selectItems value="#{permissaoModuloBean.empresas}"
+							var="empresa" itemValue="#{empresa}"
+							itemLabel="#{empresa.razaoSocial} - #{empresa.cnpj}" />
+					</p:selectOneMenu>
+
+
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{permissaoModuloBean.salvar()}"
+						update=":msg :formCadastro:painel :formListagem:tabela" />
+					<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();"
+						update=":formCadastro:painel" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

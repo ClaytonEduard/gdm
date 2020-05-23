@@ -1,0 +1,342 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Empresa</ui:define>
+
+	<ui:define name="corpo">
+		<!-- 		<p:growl id="msg" /> -->
+		<h:form id="formListagem">
+			<p:panel header="Pessoa Juridica - Listagem">
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					value="#{empresaBean.empresas}" var="empresa" paginator="true"
+					style="text-align:center" rows="10" scrollable="true"
+					scrollWidth="full" paginatorPosition="bottom">
+					<f:facet name="header">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show(); "
+							actionListener="#{empresaBean.novo}" update=":formCadastro:tabV">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</f:facet>
+
+					<p:column headerText="Opções" whith="5" width="70">
+
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{empresaBean.excluir}"
+							update=":msg :formListagem:tabela">
+							<p:confirm header="Confirmação"
+								message="Deseja excluir a empresa
+							?" icon="ui-icon-alert" />
+							<f:attribute name="empresaSelecionada" value="#{empresa}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+
+						<p:commandButton icon="ui-icon-pencil" update=":formCadastro:tabV"
+							actionListener="#{empresaBean.editar}"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="empresaSelecionada" value="#{empresa}" />
+
+						</p:commandButton>
+
+					</p:column>
+
+					<p:column headerText="Tipo de Empresa"
+						sortBy="#{empresa.tipoEmpresa}" width="200"
+						filterBy="#{empresa.tipoEmpresa}">
+						<h:outputText value="#{empresa.tipoEmpresa}" />
+					</p:column>
+					<p:column headerText="CNPJ" sortBy="#{empresa.cnpj}" width="150"
+						filterBy="#{empresa.cnpj}">
+						<h:outputText value="#{empresa.cnpj}" mask="99.999.999/9999-99">
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Razão Social" sortBy="#{empresa.razaoSocial}"
+						width="200" filterBy="#{empresa.razaoSocial}">
+						<h:outputText value="#{empresa.razaoSocial}" />
+					</p:column>
+
+					<p:column headerText="Nome Fantasia"
+						sortBy="#{empresa.nomefantazia}" width="200"
+						filterBy="#{empresa.nomefantazia}">
+						<h:outputText value="#{empresa.nomefantazia}" />
+					</p:column>
+
+					<p:column headerText="Endereço" sortBy="#{empresa.rua}" width="170"
+						filterBy="#{empresa.rua}">
+						<h:outputText value="#{empresa.rua}" />
+					</p:column>
+					<p:column headerText="Numero" sortBy="#{empresa.numero}"
+						width="100">
+						<h:outputText value="#{empresa.numero}" />
+					</p:column>
+					<p:column headerText="Bairro" sortBy="#{empresa.bairro}"
+						width="150" filterBy="#{empresa.bairro}">
+						<h:outputText value="#{empresa.bairro}" />
+					</p:column>
+					<p:column headerText="CEP" sortBy="#{empresa.cep}" width="150"
+						filterBy="#{empresa.cep}">
+						<h:outputText value="#{empresa.cep}" />
+					</p:column>
+					<p:column headerText="Complemento" width="150">
+						<h:outputText value="#{empresa.complemento}" />
+					</p:column>
+
+					<p:column headerText="Telefone" sortBy="#{empresa.telefone}"
+						width="150" filterBy="#{empresa.telefone}">
+						<h:outputText value="#{empresa.telefone}" mask="(99) 9999-9999" />
+					</p:column>
+
+					<p:column headerText="Celular" sortBy="#{empresa.celular}"
+						width="150" filterBy="#{empresa.celular}">
+						<h:outputText value="#{empresa.celular}" mask="(99) 99999-9999" />
+					</p:column>
+
+					<p:column headerText="Email" sortBy="#{empresa.email}" width="250"
+						filterBy="#{empresa.email}">
+						<h:outputText value="#{empresa.email}" />
+					</p:column>
+
+					<p:column headerText="Email XML" sortBy="#{empresa.emailxml}"
+						width="250" filterBy="#{empresa.emailxml}">
+						<h:outputText value="#{empresa.emailxml}" />
+					</p:column>
+
+					<p:column headerText="Cnae Principal"
+						sortBy="#{empresa.grupoCNAE.grupo} - #{empresa.grupoCNAE.denominacao}"
+						width="250"
+						filterBy="#{empresa.grupoCNAE.grupo} - #{empresa.grupoCNAE.denominacao}">
+						<h:outputText
+							value="#{empresa.grupoCNAE.grupo} - #{empresa.grupoCNAE.denominacao}" />
+					</p:column>
+
+					<p:column headerText="Cnaes Secundários"
+						sortBy="#{empresa.grupoCNAE.grupo} - #{empresa.grupoCNAE.denominacao}"
+						width="250"
+						filterBy="#{empresa.grupoCNAE.grupo} - #{empresa.grupoCNAE.denominacao}">
+						<h:outputText value="#{empresa.plistClasseCnae}" />
+					</p:column>
+					<p:column headerText="Cidade" width="100">
+						<h:outputText
+							value="#{empresa.cidade.nome} - #{empresa.cidade.estado.sigla}" />
+					</p:column>
+				</p:dataTable>
+
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Empresa - Cadastro" widgetVar="dialogo" width="620"
+			height="550" draggable="false" resizable="false" modal="true"
+			closable="true" closeOnEscape="true">
+			<h:form id="formCadastro">
+
+				<p:tabView id="tabV" activeIndex="0" tabindex="0">
+					<p:tab title="Dados">
+						<h:panelGrid id="painel" columns="2">
+
+							<p:outputLabel for="grau" value="Matriz / Filial" />
+							<p:selectOneRadio id="grau" value="#{empresaBean.empresa.grau}">
+								<f:selectItem itemLabel="Matriz" itemValue="M" />
+								<f:selectItem itemLabel="Filial" itemValue="F" />
+							</p:selectOneRadio>
+
+							<p:outputLabel value="CNPJ" id="cnpjLabel" for="CNPJ" />
+							<p:inputMask id="CNPJ" size="24" mask="99.999.999/9999-99"
+								value="#{empresaBean.empresa.cnpj}" required="true"
+								requiredMessage="Campo obrigatório não preenchido" />
+							<p:outputLabel value="Razão Social:" for="razaosocial" />
+							<p:inputText id="razaosocial" maxlength="50" size="30"
+								value="#{empresaBean.empresa.razaoSocial}"
+								converter="upperCaseConverter">
+								<p:ajax event="blur" update="@this" />
+							</p:inputText>
+
+
+							<p:outputLabel value="Nome Fantasia" for="nomefantasia" />
+							<p:inputText id="nomefantasia" maxlength="100" size="30"
+								value="#{empresaBean.empresa.nomefantazia}"
+								converter="upperCaseConverter">
+								<p:ajax event="blur" update="@this" />
+							</p:inputText>
+
+							<p:outputLabel value="Endereço:" for="endereco" />
+							<p:inputText id="endereco" maxlength="50" size="30"
+								value="#{empresaBean.empresa.rua}"
+								converter="upperCaseConverter">
+								<p:ajax event="blur" update="@this" />
+							</p:inputText>
+
+
+							<p:outputLabel value="Número:" for="numero" />
+							<p:inputText id="numero" maxlength="6" size="5"
+								value="#{empresaBean.empresa.numero}"
+								converter="upperCaseConverter">
+								<p:ajax event="blur" update="@this" />
+							</p:inputText>
+
+							<p:outputLabel value="Bairro:" for="bairro" />
+							<p:inputText id="bairro" maxlength="50" size="30"
+								value="#{empresaBean.empresa.bairro}"
+								converter="upperCaseConverter">
+								<p:ajax event="blur" update="@this" />
+							</p:inputText>
+
+
+							<p:outputLabel value="CEP:" for="cep" />
+							<p:inputMask id="cep" mask="99999-999" size="30"
+								value="#{empresaBean.empresa.cep}" />
+
+							<p:outputLabel value="Complemento:" for="complemento" />
+							<p:inputText id="complemento" maxlength="100" size="30"
+								value="#{empresaBean.empresa.complemento}"
+								converter="upperCaseConverter">
+								<p:ajax event="blur" update="@this" />
+							</p:inputText>
+
+
+							<p:outputLabel value="Cidade" for="cidade" />
+							<p:selectOneMenu filter="true" id="cidade" required="true"
+								value="#{empresaBean.empresa.cidade}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true"
+									itemLabel="Selecione uma Cidade" />
+								<f:selectItems value="#{empresaBean.cidades}" var="cidade"
+									itemValue="#{cidade}"
+									itemLabel="#{cidade.nome} - #{cidade.estado.sigla}" />
+							</p:selectOneMenu>
+
+
+							<p:outputLabel value="Telefone:" for="telefone" />
+							<p:inputMask id="telefone" mask="(99)9999-9999" size="30"
+								value="#{empresaBean.empresa.telefone}" />
+
+							<p:outputLabel value="Email:" for="email" />
+							<p:inputText id="email" maxlength="50" size="30"
+								value="#{empresaBean.empresa.email}"
+								converter="upperCaseConverter">
+								<p:ajax event="blur" update="@this" />
+							</p:inputText>
+
+						</h:panelGrid>
+
+					</p:tab>
+					<p:tab title="Dados Fiscais">
+						<h:panelGrid columns="1">
+							<h:panelGrid columns="2">
+								<p:outputLabel value="Tipo de Empresa:" for="tipoempresa" />
+								<p:selectOneMenu filter="true" id="tipoempresa" required="true"
+									converter="omnifaces.SelectItemsConverter"
+									value="#{empresaBean.empresa.tipoEmpresa}">
+									<f:selectItem itemLabel="EMPRESÁRIO INDIVIDUAL - EI"
+										itemValue="EMPRESÁRIO INDIVIDUAL - EI" />
+									<f:selectItem
+										itemLabel="EMPRESA INDIVIDUAL DE RESPONSABILIDADE LIMITADA - EIRELI"
+										itemValue="EMPRESA INDIVIDUAL DE RESPONSABILIDADE LIMITADA - EIRELI" />
+									<f:selectItem itemLabel="EMPRESA DE PEQUENO PORTE - EPP"
+										itemValue="EMPRESA DE PEQUENO PORTE - EPP" />
+									<f:selectItem itemLabel="MICROEMPREENDEDOR INDIVIDUAL - MEI"
+										itemValue="MICROEMPREENDEDOR INDIVIDUAL - MEI" />
+									<f:selectItem itemLabel="MICROEMPRESA - ME"
+										itemValue="MICROEMPRESA - ME" />
+
+									<f:selectItem itemLabel="SOCIEDADE ANÔNIMA - S.A"
+										itemValue="SOCIEDADE ANÔNIMA - S.A" />
+									<f:selectItem itemLabel="SOCIEDADE LIMITADA - LTDA"
+										itemValue="SOCIEDADE LIMITADA - LTDA" />
+								</p:selectOneMenu>
+								<p:outputLabel value="Atividade Principal CNAE" for="cnae" />
+								<p:selectOneMenu filter="true" id="cnae" required="true"
+									converter="omnifaces.SelectItemsConverter"
+									value="#{empresaBean.empresa.grupoCNAE}">
+									<f:selectItems value="#{empresaBean.grupocnaes}"
+										var="grupoCnae" itemValue="#{grupoCnae}"
+										itemLabel="#{grupoCnae.grupo} - #{grupoCnae.denominacao}" />
+								</p:selectOneMenu>
+
+
+
+								<p:outputLabel value="Email XMl:" for="emailxml" />
+								<p:inputText id="emailxml" maxlength="50" size="30"
+									value="#{empresaBean.empresa.emailxml}"
+									converter="upperCaseConverter">
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+
+
+								<p:outputLabel for="pessoaContato" value="Pessoa Contato" />
+								<p:inputText id="pessoaContato" maxlength="50" size="30"
+									value="#{empresaBean.empresa.pessoacontato}"
+									converter="upperCaseConverter">
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+
+								<p:outputLabel value="Celular:" for="celular" />
+								<p:inputMask id="celular" mask="(99)99999-9999" size="30"
+									value="#{empresaBean.empresa.celular}" />
+
+								<p:outputLabel value="Função Serviço" for="funcaoservico" />
+								<p:selectOneMenu filter="true" id="funcaoservico"
+									required="true" value="#{empresaBean.empresa.funcaoServico}"
+									converter="omnifaces.SelectItemsConverter">
+									<f:selectItem noSelectionOption="true"
+										itemLabel="Selecione uma função serviço" />
+									<f:selectItems value="#{empresaBean.funcaoServicos}"
+										var="funcao" itemValue="#{funcao}"
+										itemLabel="#{funcao.descricao}" />
+								</p:selectOneMenu>
+								<p:outputLabel value="Ativo" for="ativo" />
+								<p:selectBooleanCheckbox id="ativo"
+									value="#{empresaBean.empresa.situacao}" />
+
+
+
+							</h:panelGrid>
+							<h:panelGrid columns="4">
+								<p:outputLabel value="Lista Cnaes" for="classecnae" />
+								<p:selectManyMenu filter="true" id="classecnae"
+									style="width:200px;" converter="omnifaces.SelectItemsConverter"
+									showCheckbox="true"
+									value="#{empresaBean.empresa.plistClasseCnae}">
+									<f:selectItem noSelectionOption="false"
+										itemLabel="Selecione uma Classe Cnae" />
+									<f:selectItems value="#{empresaBean.classecnaes}" var="classe"
+										itemValue="#{classe.classe} - #{classe.denominacao}"
+										itemLabel="#{classe.classe} - #{classe.denominacao}" />
+								</p:selectManyMenu>
+
+							</h:panelGrid>
+
+						</h:panelGrid>
+
+
+						<h:panelGrid columns="2">
+							<p:commandButton value="Salvar"
+								actionListener="#{empresaBean.salvar}"
+								update=":msg :formCadastro:tabV :formListagem:tabela" />
+
+						</h:panelGrid>
+					</p:tab>
+
+
+				</p:tabView>
+
+
+			</h:form>
+
+		</p:dialog>
+
+
+	</ui:define>
+</ui:composition>

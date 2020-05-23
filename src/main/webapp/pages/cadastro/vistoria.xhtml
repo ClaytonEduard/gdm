@@ -1,0 +1,524 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Vistoria</ui:define>
+
+	<ui:define name="corpo">
+		<!-- Esse é o id da mensagem salvar exibida quando salva algum novo cadastro -->
+		<!-- 	<p:growl id="msg"/> -->
+
+		<!-- Aqui inicia o formulário com os valores já cadastrados com um id-->
+		<h:form id="listaDados">
+			<!-- Este é o cabeçalho do formulario -->
+
+
+			<p:panel header="Vistoria - Listagem ">
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado"
+					paginator="true" value="#{vistoriaBean.vistorias}" var="vistoria"
+					style="text-align: center;" rows="10">
+					<f:facet name="header">
+
+						<!-- Dentro do rodapé está o botão novo, responsavel por criar um novo valor que é definido na classe estadoBean -->
+						<!-- O botão tem a propriedade de oncomplete isso quer dizer que ao terminar de ser pressionado ele retornará com uma ação -->
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							actionListener="#{vistoriaBean.novo()}"
+							update="formularioCadastro:painelCampos">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</f:facet>
+
+					<!-- Aqui inicia as pripriedades internas do popup que ira emitir uma mensagem de confirmação -->
+					<!-- Vamos inserir o comando que irá chamar a classe estadoBean / excluir que funcionara apenas quando o usuario clicar em sim-->
+					<p:column headerText="Opções" width="100">
+
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{vistoriaBean.excluir}"
+							update=":msg :listaDados:tabela">
+							<p:confirm header="Confirmação"
+								message="Deseja excluir a vistoria?" icon="ui-icon-alert"></p:confirm>
+							<f:attribute name="vistoriaSelecionada" value="#{vistoria}"></f:attribute>
+						</p:commandButton>
+
+						<!-- Botão editar -->
+						<p:commandButton icon="ui-icon-pencil"
+							actionListener="#{vistoriaBean.editar}"
+							update=":formularioCadastro:painelCampos :listaDados:tabela"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="vistoriaSelecionada" value="#{vistoria}"></f:attribute>
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</p:column>
+
+
+					<p:column headerText="Placa" sortBy="#{vistoria.placaCavalo}"
+						filterBy="#{vistoria.placaCavalo}" width="120">
+						<h:outputText value="#{vistoria.placaCavalo}" />
+					</p:column>
+
+					<!-- Aqui inicia o cabeçalho interno do formulario que ira exibir os dados está incluso Classificação = Sort e Filtro = Filter -->
+					<p:column headerText="Data/Hora"
+						sortBy="#{vistoria.dataLancamento}"
+						filterBy="#{vistoria.dataLancamento}" width="170">
+						<h:outputText value="#{vistoria.dataLancamento}" />
+					</p:column>
+
+					<p:column headerText="Transportadora"
+						sortBy="#{vistoria.transportadora.razaoSocial}"
+						filterBy="#{vistoria.transportadora.razaoSocial}">
+						<h:outputText value="#{vistoria.transportadora.razaoSocial}" />
+					</p:column>
+
+					<p:column headerText="Veículo"
+						sortBy="#{vistoria.veiculoResultadoCombinacao.apelido}"
+						filterBy="#{vistoria.veiculoResultadoCombinacao.apelido}">
+						<h:outputText
+							value="#{vistoria.veiculoResultadoCombinacao.apelido}" />
+					</p:column>
+
+					<p:column headerText="Status" sortBy="#{vistoria.statusVistoria}"
+						filterBy="#{vistoria.statusVistoria}" width="150">
+						<h:outputText value="#{vistoria.statusVistoria}" />
+					</p:column>
+
+
+
+
+
+
+
+				</p:dataTable>
+
+
+
+
+
+
+				<!-- Aqui vamos capturar as informações da linha que desejamos excluir  -->
+				<!-- O atributo name = pode ser qualquer texto que desejar e o value vamos definir o cursor que possui o valor -->
+
+				<!-- Aqui inicia a contrução do PopUp de confirmação. O mesmo deve ficar fora da tabela da pagina principal, assim estara disponivel a todas opçoes -->
+				<p:confirmDialog global="True">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check"></p:commandButton>
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close"></p:commandButton>
+				</p:confirmDialog>
+			</p:panel>
+		</h:form>
+
+		<!-- Aqui inicia o popup de cadastro de um novo estado. Primeiro vem o titulo, depois o tipo de tela "dialog" é popup -->
+		<!-- draggable = false - nao arrastavel / resizable = false - nao redimensionavel / Closable = false - nao fechar no X -->
+		<!-- Modal = true - ele bloqueia a interatividade com a tela do fundo -->
+		<p:dialog header="VISTORIA GDM" widgetVar="dialogo" draggable="true"
+			resizable="false" modal="true" closable="true" maximizable="true" closeOnEscape="true"
+			responsive="true">
+			<!-- Aqui estou iniciando o formulario e dando um ID para ele, assim quando formos usar o UPDATE referenciamos o ID -->
+			<h:form id="formularioCadastro">
+				<!-- Aqui vamos iniciar um painel e dar um id para ele, definindo 2 colunas para organizar titulo e campo de preenchimento -->
+				<!-- Acima o titulo do campo 1 -->
+				<!-- Aqui vamos definir o tipo de campo inputtext aceitando ate 50 carateres e com tamanho 15 -->
+				<!--Acima definimos o valor referenciando a classe estadoBean que contem a variavel estado e faz comunicação com o banco  -->
+				<h:panelGrid id="painelCampos" columns="1">
+					<p:tabView activeIndex="#{vistoriaBean.indiceTabView}"
+						tabindex="#{vistoriaBean.indiceTabView}" cache="true"
+						onTabChange="#{vistoriaBean.indiceTabView}"
+						style="margin-top:2px; background:#FFFFFF; align:center;  width:530px">
+						<p:tab title="Passo 1">
+
+							<p:fieldset legend="TRANSPORTADORA" style="margin-bottom:5px">
+								<h:panelGrid id="painelTransportadora" columns="1">
+									<p:selectOneMenu required="true" filter="true"
+										value="#{vistoriaBean.vistoria.transportadora}"
+										converter="omnifaces.SelectItemsConverter">
+										<f:selectItem noSelectionOption="true" itemValue=""
+											itemLabel="Selecione uma transportadora">
+										</f:selectItem>
+										<f:selectItems value="#{vistoriaBean.transportadoras}"
+											var="cursorTransportadora"
+											itemValue="#{cursorTransportadora}"
+											itemLabel="#{cursorTransportadora.razaoSocial} - #{cursorTransportadora.cnpj}"></f:selectItems>
+									</p:selectOneMenu>
+								</h:panelGrid>
+							</p:fieldset>
+
+
+							<p:fieldset legend="PLACAS" style="margin-bottom:5px">
+								<h:panelGrid id="painelPlacas" columns="4">
+									<p:outputLabel for="placaCavalo" value="Placa cavalo"
+										indicateRequired="true">
+									</p:outputLabel>
+									<p:inputMask mask="aaa-9999" id="placaCavalo" maxlength="8"
+										size="10" value="#{vistoriaBean.vistoria.placaCavalo}"
+										required="true" requiredMessage="O campo placa é obrigatório"
+										converter="upperCaseConverter">
+										<p:ajax event="blur" update="@this"></p:ajax>
+									</p:inputMask>
+
+									<p:outputLabel for="placaCarroceria1" value="Placa 2">
+									</p:outputLabel>
+									<p:inputMask mask="aaa-9999" id="placaCarroceria1"
+										maxlength="8" size="10"
+										value="#{vistoriaBean.vistoria.placaCarroceria1}"
+										converter="upperCaseConverter">
+										<p:ajax event="blur" update="@this"></p:ajax>
+									</p:inputMask>
+
+									<p:outputLabel for="placaCarroceria2" value="Placa 3">
+									</p:outputLabel>
+									<p:inputMask mask="aaa-9999" id="placaCarroceria2"
+										converter="upperCaseConverter" maxlength="8" size="10"
+										value="#{vistoriaBean.vistoria.placaCarroceria2}">
+										<p:ajax event="blur" update="@this"></p:ajax>
+									</p:inputMask>
+
+									<p:outputLabel for="placaCarroceria3" value="Placa 4">
+									</p:outputLabel>
+									<p:inputMask mask="aaa-9999" id="placaCarroceria3"
+										converter="upperCaseConverter" maxlength="8" size="10"
+										value="#{vistoriaBean.vistoria.placaCarroceria3}">
+										<p:ajax event="blur" update="@this"></p:ajax>
+									</p:inputMask>
+								</h:panelGrid>
+								<p:spacer width="10" height="10" />
+							</p:fieldset>
+
+							<p:fieldset legend="VEÍCULO" style="margin-bottom:5px">
+								<h:panelGrid id="painelVeiculo" columns="3">
+									<p:outputLabel value="Cavalo" indicateRequired="true">
+									</p:outputLabel>
+									<p:selectOneMenu required="true"
+										value="#{vistoriaBean.vistoria.cavalo}"
+										converter="omnifaces.SelectItemsConverter" filter="true">
+										<f:selectItem noSelectionOption="true" itemValue=""
+											itemLabel="Selecione um veiculo" />
+										<f:selectItems value="#{vistoriaBean.cavalos}"
+											var="cursorCavalo" itemValue="#{cursorCavalo}"
+											itemLabel="#{cursorCavalo.descricao}"></f:selectItems>
+										<p:ajax event="change"
+											update="@this MensagemDetalheVeiculo statusSistema"
+											listener="#{vistoriaBean.identificarVeiculoGdm}"></p:ajax>
+										<p:ajax event="change" process="@this" update="painelImagem"
+											listener="#{vistoriaBean.imagensConjuntos}"></p:ajax>
+										<p:ajax event="change"
+											listener="#{vistoriaBean.carregarImagemCavalo()}"
+											process="@this" update="painelImagem" />
+										<p:ajax event="change" update="ImagemCombinacao" />
+									</p:selectOneMenu>
+									<p:spacer width="
+										5" height="5" />
+
+									<p:outputLabel value="Carroceria 1">
+									</p:outputLabel>
+									<p:selectOneMenu value="#{vistoriaBean.vistoria.carroceria1}"
+										converter="omnifaces.SelectItemsConverter" filter="true">
+										<f:selectItem noSelectionOption="true" itemValue=""
+											itemLabel="Selecione um veiculo" />
+										<f:selectItems value="#{vistoriaBean.carrocerias}"
+											var="cursorCavalo" itemValue="#{cursorCavalo}"
+											itemLabel="#{cursorCavalo.descricao}"></f:selectItems>
+										<p:ajax event="change"
+											update="@this MensagemDetalheVeiculo statusSistema"
+											listener="#{vistoriaBean.identificarVeiculoGdm}"></p:ajax>
+										<p:ajax event="change" process="@this" update="painelImagem"
+											listener="#{vistoriaBean.imagensConjuntos}"></p:ajax>
+										<p:ajax event="change"
+											listener="#{vistoriaBean.carregarImagemCarroceria1()}"
+											process="@this" update="painelImagem" />
+										<p:ajax event="change" update="ImagemCombinacao" />
+									</p:selectOneMenu>
+									<p:spacer width="5" height="5" />
+
+									<p:outputLabel value="Carroceria 2">
+									</p:outputLabel>
+									<p:selectOneMenu value="#{vistoriaBean.vistoria.carroceria2}"
+										converter="omnifaces.SelectItemsConverter" filter="true">
+										<f:selectItem noSelectionOption="true" itemValue=""
+											itemLabel="Selecione um veiculo" />
+										<f:selectItems value="#{vistoriaBean.carrocerias}"
+											var="cursorCavalo" itemValue="#{cursorCavalo}"
+											itemLabel="#{cursorCavalo.descricao}"></f:selectItems>
+										<p:ajax event="change"
+											update="@this MensagemDetalheVeiculo statusSistema"
+											listener="#{vistoriaBean.identificarVeiculoGdm}"></p:ajax>
+										<p:ajax event="change" process="@this" update="painelImagem"
+											listener="#{vistoriaBean.imagensConjuntos}"></p:ajax>
+										<p:ajax event="change"
+											listener="#{vistoriaBean.carregarImagemCarroceria2()}"
+											process="@this" update="painelImagem" />
+										<p:ajax event="change" update="ImagemCombinacao" />
+									</p:selectOneMenu>
+									<p:spacer width="5" height="5" />
+
+									<p:outputLabel value="Carroceria 3">
+									</p:outputLabel>
+									<p:selectOneMenu value="#{vistoriaBean.vistoria.carroceria3}"
+										converter="omnifaces.SelectItemsConverter" filter="true">
+										<f:selectItem noSelectionOption="true" itemValue=""
+											itemLabel="Selecione um veiculo" />
+										<f:selectItems value="#{vistoriaBean.carrocerias}"
+											var="cursorCavalo" itemValue="#{cursorCavalo}"
+											itemLabel="#{cursorCavalo.descricao}"></f:selectItems>
+										<p:ajax event="change"
+											update="@this MensagemDetalheVeiculo statusSistema"
+											listener="#{vistoriaBean.identificarVeiculoGdm}"></p:ajax>
+										<p:ajax event="change" process="@this" update="painelImagem"
+											listener="#{vistoriaBean.imagensConjuntos}"></p:ajax>
+										<p:ajax event="change"
+											listener="#{vistoriaBean.carregarImagemCarroceria3()}"
+											process="@this" update="painelImagem" />
+										<p:ajax event="change" update="ImagemCombinacao" />
+									</p:selectOneMenu>
+								</h:panelGrid>
+							</p:fieldset>
+
+
+
+
+
+
+							<h:panelGrid id="painelImagem" columns="8">
+								<p:column width="100" style="margin-left:10px">
+									<p:galleria value="#{vistoriaBean.imagemCavalo}" var="image"
+										style="margin-top:10px; background:#FFFFFF; align:center;"
+										panelHeight="90" panelWidth="127" showFilmstrip="false">
+										<p:graphicImage cache="false"
+											url="http://200.225.223.161:8081/carrocerias/#{image}"
+											styleClass="img" height="89" width="126"
+											style="align:center; margin-top:1px; margin-left:1px; margin-bottom:1px">
+										</p:graphicImage>
+									</p:galleria>
+								</p:column>
+								<p:column width="100" style="margin-left:10px">
+									<p:galleria value="#{vistoriaBean.imagemCarroceria1}"
+										var="image"
+										style="margin-top:10px; background:#FFFFFF; align:center;"
+										panelHeight="90" panelWidth="127" showFilmstrip="false">
+										<p:graphicImage cache="false"
+											url="http://200.225.223.161:8081/carrocerias/#{image}"
+											styleClass="img" height="89" width="126"
+											style="align:center; margin-top:1px; margin-left:1px; margin-bottom:1px">
+										</p:graphicImage>
+									</p:galleria>
+								</p:column>
+								<p:column width="100" style="margin-left:10px">
+									<p:galleria value="#{vistoriaBean.imagemCarroceria2}"
+										var="image"
+										style="margin-top:10px; background:#FFFFFF; align:center;"
+										panelHeight="90" panelWidth="127" showFilmstrip="false">
+										<p:graphicImage cache="false"
+											url="http://200.225.223.161:8081/carrocerias/#{image}"
+											styleClass="img" height="89" width="126"
+											style="align:center; margin-top:1px; margin-left:1px; margin-bottom:1px"></p:graphicImage>
+									</p:galleria>
+								</p:column>
+								<p:column width="100" style="margin-left:10px">
+									<p:galleria value="#{vistoriaBean.imagemCarroceria3}"
+										var="image"
+										style="margin-top:10px; background:#FFFFFF; align:center;"
+										panelHeight="90" panelWidth="127" showFilmstrip="false">
+										<p:graphicImage cache="false"
+											url="http://200.225.223.161:8081/carrocerias/#{image}"
+											styleClass="img" height="89" width="126"
+											style="align:center; margin-top:1px; margin-left:1px; margin-bottom:1px"></p:graphicImage>
+									</p:galleria>
+								</p:column>
+							</h:panelGrid>
+
+						</p:tab>
+
+						<p:tab title="Passo 2">
+
+							<p:tooltip />
+							<p:messages id="MensagemComp" showDetail="true" closable="true"
+								autoUpdate="true" for="Msgcomp">
+							</p:messages>
+							<p:fieldset id="Aba2" legend="CAPACIDADES"
+								style="margin-bottom:10px">
+
+								<h:panelGrid columns="1" style="margin-bottom:10px"
+									cellpadding="5">
+									<h:outputText value="O veículo possui plaqueta?" />
+									<p:selectBooleanButton id="value"
+										value="#{vistoriaBean.vistoria.semPlaqueta}" onLabel="Sim"
+										offLabel="Não" onIcon="ui-icon-check" offIcon="ui-icon-close"
+										style="width:90px">
+									</p:selectBooleanButton>
+
+									<p:outputLabel value="Comprimento do veículo (m)"
+										indicateRequired="true">
+									</p:outputLabel>
+									<h:panelGrid columns="1" style="margin-bottom: 10px">
+										<p:inputText id="comprimento"
+											value="#{vistoriaBean.vistoria.comprimento}" disabled="true" />
+										<p:slider for="comprimento" maxValue="35">
+											<p:ajax event="slideEnd"
+												listener="#{vistoriaBean.MensagemComprimento}"
+												update="MensagemComp mensagemComprimentoTxt statusSistema"></p:ajax>
+										</p:slider>
+									</h:panelGrid>
+								</h:panelGrid>
+
+
+								<p:outputLabel value="Dados totais do conjunto"
+									style="margin-bottom:10px">
+								</p:outputLabel>
+								<h:panelGrid id="painelcapacidades" columns="2">
+									<p:outputLabel for="tara" value="Tara" indicateRequired="true">
+									</p:outputLabel>
+									<p:inputText id="tara" maxlength="5" size="10"
+										value="#{vistoriaBean.vistoria.tara}" required="true"
+										requiredMessage="O campo placa é obrigatório">
+										<p:ajax event="blur"
+											update="@this MensagemPlaqueta mensagemTxtPlaqueta statusSistema"
+											listener="#{vistoriaBean.tara}"></p:ajax>
+										<p:ajax event="change" update="MensagemPlaqueta"></p:ajax>
+									</p:inputText>
+
+									<p:outputLabel for="capacidadelotacao" value="Lotação"
+										indicateRequired="true">
+									</p:outputLabel>
+									<p:inputText id="capacidadelotacao" maxlength="5" size="10"
+										value="#{vistoriaBean.vistoria.lotacao}" required="true">
+										<p:ajax event="blur"
+											update="@this MensagemPlaqueta mensagemTxtPlaqueta statusSistema"
+											listener="#{vistoriaBean.lotacao}"></p:ajax>
+										<p:ajax event="change" update="MensagemPlaqueta"></p:ajax>
+									</p:inputText>
+
+									<p:outputLabel for="capacidadepbt" value="PBT"
+										indicateRequired="true">
+									</p:outputLabel>
+									<p:inputText id="capacidadepbt" maxlength="5" size="10"
+										value="#{vistoriaBean.vistoria.pbt}" required="true">
+										<p:ajax event="blur"
+											update="@this MensagemPlaqueta msgPlaqueta mensagemTxtPlaqueta statusSistema"
+											listener="#{vistoriaBean.pbt}"></p:ajax>
+										<p:ajax event="change"
+											listener="#{vistoriaBean.carregarImagemVeiculoGdm()}"
+											process="@this" update="ImagemCombinacao" />
+										<p:ajax event="change" update="MensagemPlaqueta"></p:ajax>
+									</p:inputText>
+								</h:panelGrid>
+								<p:tooltip />
+								<p:messages id="MensagemPlaqueta" showDetail="true"
+									closable="true" autoUpdate="true" for="Msgplaqueta">
+								</p:messages>
+								<h:panelGrid columns="1" style="margin-bottom:10px"
+									cellpadding="5">
+									<p:inputTextarea value="#{vistoriaBean.mensagemPlaqueta}"
+										id="msgPlaqueta" rows="1" cols="48" disabled="true" />
+
+								</h:panelGrid>
+							</p:fieldset>
+
+
+							<p:fieldset legend="TANQUE SUPLEMENTAR" style="margin-bottom:5px">
+								<h:panelGrid columns="1" style="margin-bottom:5px"
+									cellpadding="5">
+									<h:outputText value="O veículo possui tanque suplementar? " />
+									<p:selectBooleanButton id="tanque"
+										value="#{vistoriaBean.tanqueSuplemSelecionado}" onLabel="Sim"
+										offLabel="Não" onIcon="ui-icon-check" offIcon="ui-icon-close"
+										style="width:90px">
+										<p:ajax event="change"
+											update="@this msgComTanqueSupl mensagemTanqueSuplementarTxt statusSistema"
+											listener="#{vistoriaBean.tanqueSupRes}"></p:ajax>
+									</p:selectBooleanButton>
+								</h:panelGrid>
+								<h:panelGrid columns="1" style="margin-bottom:5px"
+									cellpadding="5">
+									<p:inputTextarea id="msgComTanqueSupl"
+										value="#{vistoriaBean.mensagemTanqueSuplem}" rows="2"
+										cols="48" disabled="true" />
+								</h:panelGrid>
+							</p:fieldset>
+						</p:tab>
+
+
+						<p:tab title="Resultado">
+
+							<f:event listener="#{vistoriaBean.identificarVeiculoGdm}"
+								type="preValidate" />
+							<!-- Aqui iniciamos um novo painel grid para organizar os botoes salvar e fechar do popup "novo" -->
+							<!-- Definimos o texto interno no botão Salvar, em seguida definimos uma ação salvar da classe estadoBean -->
+
+							<h:panelGrid id="ImagemCombinacao" columns="1">
+								<p:column width="100" style="margin-left:10px">
+									<p:galleria value="#{vistoriaBean.imagemVeiculoGdm}"
+										var="image"
+										style="margin-top:2px; background:#FFFFFF; align:center;"
+										panelHeight="195" panelWidth="380" showFilmstrip="false">
+										<p:graphicImage cache="false"
+											url="http://200.225.223.161:8081/caminhoes/#{image}"
+											styleClass="img" height="200" width="490"
+											style="align:center; margin-top:5px; margin-left:5px; margin-bottom:5px">
+										</p:graphicImage>
+									</p:galleria>
+								</p:column>
+
+								<p:inputTextarea id="MensagemDetalheVeiculo"
+									value="#{vistoriaBean.mensagemCombinacao}" rows="2" cols="53"
+									disabled="true" />
+
+								<p:inputTextarea id="mensagemComprimentoTxt"
+									value="#{vistoriaBean.mensagemComprimento2}" rows="2" cols="53"
+									disabled="true" />
+
+								<p:inputTextarea id="mensagemTxtPlaqueta" rows="2" cols="53"
+									disabled="true" value="#{vistoriaBean.mensagemPlaqueta}" />
+								<p:inputTextarea id="mensagemTanqueSuplementarTxt" rows="2"
+									cols="53" value="#{vistoriaBean.mensagemTanqueSuplem}"
+									disabled="true" />
+
+								<h:panelGrid id="gradeStatus" columns="2">
+									<p:inputTextarea id="statusSistema" rows="1" cols="14"
+										disabled="true"
+										value="#{vistoriaBean.vistoria.resultadoVistoriaSistema}" />
+									<p:selectOneMenu
+										value="#{vistoriaBean.vistoria.statusVistoria}"
+										required="true">
+										<f:selectItem itemLabel="Parecer do vistoriador" itemValue=""
+											noSelectionOption="true" />
+										<f:selectItem itemLabel="STATUS: APROVADO"
+											itemValue="APROVADO" />
+										<f:selectItem itemLabel="STATUS: REPROVADO"
+											itemValue="REPROVADO" />
+										<f:selectItem itemLabel="STATUS: APROVADO C/ RESTRICAO"
+											itemValue="APROVADO C/ REST." />
+									</p:selectOneMenu>
+
+								</h:panelGrid>
+								<p:spacer width="5" height="5" />
+								<p:outputLabel value="Observação:">
+
+								</p:outputLabel>
+								<p:inputTextarea rows="4" cols="53"
+									value="#{vistoriaBean.vistoria.observacoes}" />
+							</h:panelGrid>
+
+							<h:panelGrid columns="3">
+								<p:commandButton value="Salvar"
+									actionListener="#{vistoriaBean.salvar()}"
+									update=":listaDados:tabela :formularioCadastro:painelCampos :msg">
+								</p:commandButton>
+								<!-- Apos salvar chamamos um update para mostrar a mensagem que definimos no estadoBean e atualizar o formulario limpando os codigos -->
+								<!-- Aqui inicia o botao fechar no popup novo cadastro -->
+								
+							</h:panelGrid>
+						</p:tab>
+
+					</p:tabView>
+				</h:panelGrid>
+
+
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
