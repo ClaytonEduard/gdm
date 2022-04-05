@@ -35,8 +35,16 @@ Os usuários possuem dois perfis um para gerente onde é possível observar quai
 
 ------------
 #### Demonstração da aplicação
-
-![Video institucional](https://user-images.githubusercontent.com/11823640/161817422-73440137-9d17-4415-b8dd-19d68ffe5871.gif)
-
 ![Lançando Multas](https://user-images.githubusercontent.com/11823640/161817443-cf428278-7aeb-4722-a545-6fa3ac003de6.gif)
+
+Video de Apresentação GMD
+
+https://user-images.githubusercontent.com/11823640/161818939-e0c94448-2eb0-48ec-8262-4b269933640c.mp4
+
+Lanaçamento de Multas
+
+
+
+https://user-images.githubusercontent.com/11823640/161819092-225382db-73c0-4364-b93e-0a7b98d5888b.mp4
+
 
